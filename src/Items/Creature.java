@@ -8,4 +8,5 @@ public abstract class Creature{
 	int x;
 	int y;
 	String picture_path;
+	int number;
 }
