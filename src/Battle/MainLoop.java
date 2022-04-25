@@ -2,6 +2,7 @@ package Battle;
 
 public class MainLoop {
 
+
     public static void BattleMain()
     {
         //初始化:init
