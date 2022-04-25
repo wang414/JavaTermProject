@@ -1,8 +1,10 @@
 package Battle;
 
+import javax.swing.*;
+
 public class MainLoop {
 
-
+    Timer Render;
     public static void BattleMain()
     {
         //初始化:init
