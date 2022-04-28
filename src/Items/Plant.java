@@ -1,4 +1,7 @@
 package Items;
-public abstract class Plant {
+
+import java.awt.*;
+
+public abstract class Plant extends Creature{
 
 }

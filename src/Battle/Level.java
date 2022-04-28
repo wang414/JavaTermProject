@@ -2,6 +2,8 @@ package Battle;
 
 import Items.Plant;
 import Items.Zombie;
+
+import java.awt.*;
 import java.util.Timer;
 
 public class Level {
@@ -14,6 +16,7 @@ public class Level {
     */
     String name;   // 关卡名称
     String BackgroundPATH; //关卡贴图路径
+    Image Background;
     int background_type; //0 白天草坪 1 黑夜草坪 2 白天泳池 3 黑夜泳池 5 屋顶
     Level()
     {

@@ -1,4 +1,4 @@
 package Items;
-public abstract class Zombie{
+public abstract class Zombie extends Creature{
 	
 }
