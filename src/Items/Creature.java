@@ -1,8 +1,13 @@
 package Items;
-public abstract class Creature{
-	double hp;
-	double speed;
-	double atk;
+
+import javax.swing.*;
+
+/** @author yby */
+
+public abstract class Creature extends JButton {
+	int hp;
+	int speed;
+	int atk;
 	double atk_speed;
 	long last_atk;
 	int x;

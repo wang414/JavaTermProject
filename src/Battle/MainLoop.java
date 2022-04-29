@@ -21,36 +21,43 @@ public class MainLoop {
 
     JFrame window;
     Level curLevel;
-    ArrayList<Zombie> zombies;
-    ArrayList<Plant> plants;
+    ArrayList<Zombie> []zombies;
+    ArrayList<Plant> []plants;
+    ArrayList<SunLight> sunLights;
+    ArrayList<Bullet> bullets;
     ArrayList<Integer> chosenPlants;
     Timer createZombies;
     Timer createSun;
     Timer rending;
-    Render battlePanel;
-    static String bgImg = "";
+    JLayeredPane battlePane;
+    static final String bgPath = "";
+    JLabel bgLabel = new JLabel(new ImageIcon(bgPath));
+
+
     public MainLoop(JFrame windows)
     {
         /**
          * should be disposed before calling.
          *
-         * @Paramater main windows
+         * @Paramater JFrame window: Pass the Main Frame
          */
-        //初始化:init
+        //初始化
         window = windows;
         Init();
-        windows.dispose();
-        windows.setLayout(null);
-        initMenu();
-        initBattle();
-        battlePanel = new Render();
-        windows.getLayeredPane().add(battlePanel);
+        window.dispose();
+        window.setLayout(null);
+        battlePane = new JLayeredPane();
+        window.setContentPane(battlePane);
+        battlePane.add(bgLabel);
+        bgLabel.setBounds(-340,0,2100,900);
+        battlePane.setPosition(bgLabel, -1);
+
+        StartgenerateSun();
         //战斗主循环:
-        //渲染阶段:render
-        rending = new Timer(60, (ActionEvent e)->
-        {
-            battlePanel.repaint();
+        Timer advanceall = new Timer(30, (e) -> {
+            compute();
         });
+        advanceall.start();
         //判定阶段:Compute
 
         //交互内容:
@@ -58,43 +65,36 @@ public class MainLoop {
 
         //结束
     }
-    private void initMenu(){
-    }
-    private void initBattle(){
 
-    }
-    class Render extends JLayeredPane
+    //渲染阶段:
+    //算时间差, 开始渲染: 清空画布,从头开始画,遍历所有items:
+    //地图,植物,僵尸,阳光,小车,选择栏,铲子,暂停,进度条,光标
+
+    /**
+     * automatically generate sun lights.
+     */
+
+    private void compute()
     {
-        @Override
-        protected void paintComponent(Graphics g)
-        {
-            //绘制背景
-            Image bg = curLevel.Background;
-            g.drawImage(bg, 0, 0, null);
-
-            //绘制功能栏+铲子+暂停
-
-            //绘制植物+小车
-            for(int i = 0;i < plants.size();i++)
-            {
-                g.drawImage(plants.get(i).img, plants.get(i).x, 0, null);
-            }
-
-            //绘制僵尸
-            for(int i = 0;i < zombies.size();i++)
-            {
-                g.drawImage(zombies.get(i).img, 0, 0, null);
-            }
-
-            //绘制子弹
-
-            //绘制阳光
+        //植物的行为:尝试对每一个僵尸发起攻击
+        for(int i = 0;i < 5; ++i)
+        for(Plant plant : plants[i]){
+            Bullet tempBullet = plant.tryAttack(zombies[i]);
+            if(tempBullet != null) { bullets.add(tempBullet); }
         }
-        //渲染阶段:
-        //算时间差, 开始渲染: 清空画布,从头开始画,遍历所有items:
-        //地图,植物,僵尸,阳光,小车,选择栏,铲子,暂停,进度条,光标
+        for(int i = 0; i < 5; ++i) {
+            for (Zombie zombie : zombies[i]) {
+                zombie.advance();
+            }
+        }
+
     }
-    private void Init(){
+
+    volatile boolean bgArrived, bgBacked; //背景加载地图时移动判定
+    private void Init() {
+        JLayeredPane initPane = new JLayeredPane();
+        window.setContentPane(initPane);
+
         //导入关卡信息
         //渲染地图与出没僵尸
         //选植物

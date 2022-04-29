@@ -3,7 +3,7 @@ import javax.swing.*;
 
 public class Init {
 
-    Init(JFrame windows){
+    Init(JFrame window){
 
     }
 
