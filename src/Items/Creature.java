@@ -12,6 +12,26 @@ public abstract class Creature extends JButton {
 	long last_atk;
 	int x;
 	int y;
-	String picture_path;
+	static ImageIcon img;
 	int number;
+
+	/**
+	 * Constructor of abstract class Creature.
+	 * Augments hp, speed, atk, atk_speed, x, y, number are initialized by formal parameters.
+	 * Augment last_atk is initialized by system's nanotime.
+	 * Augment img will be initialized by subclasses.
+	 */
+	Creature(int init_hp, int init_speed, int init_atk,
+			 double init_atk_speed, int x_, int y_, int init_number)
+	{
+
+		hp = init_hp;
+		speed = init_speed;
+		atk = init_atk;
+		atk_speed = init_atk_speed;
+		last_atk = System.nanoTime();
+		x = x_;
+		y = y_;
+		number = init_number;
+	}
 }

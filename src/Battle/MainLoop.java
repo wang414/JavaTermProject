@@ -1,6 +1,8 @@
 package Battle;
 import Items.Plant;
 import Items.Zombie;
+import Items.SunLight;
+import Items.Bullet;
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
@@ -26,6 +28,7 @@ public class MainLoop {
     ArrayList<SunLight> sunLights;
     ArrayList<Bullet> bullets;
     ArrayList<Integer> chosenPlants;
+    int sunLightValue;
     Timer createZombies;
     Timer createSun;
     Timer rending;
