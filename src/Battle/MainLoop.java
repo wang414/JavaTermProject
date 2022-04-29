@@ -97,7 +97,77 @@ public class MainLoop {
 
         //导入关卡信息
         //渲染地图与出没僵尸
+        bgArrived = false;
+        bgBacked = false;
+
+        Timer t = new Timer(1, (e) -> {
+            SwingUtilities.invokeLater(()->{
+                if (!bgArrived && bgLabel.getLocation().x > -900) {
+                    bgLabel.setLocation(bgLabel.getLocation().x - 5, bgLabel.getLocation().y);
+                } else {
+                    bgArrived = true;
+                }
+            });
+        });
+
+        t.start();
+        while (!bgArrived) {
+            bgBacked = false;
+        }
+        t.stop();
+
         //选植物
+        t = new Timer(1, (e) -> {
+            SwingUtilities.invokeLater(()->{
+                if (!bgBacked && bgLabel.getLocation().x < -340) {
+                    bgLabel.setLocation(bgLabel.getLocation().x - 5, bgLabel.getLocation().y);
+                } else {
+                    bgBacked = true;
+                }
+            });
+        });
+        t.start();
+        while (!bgBacked) {
+            bgArrived = false;
+        }
+        t.stop();
+
         //开始战斗
+        JLabel p1 = new JLabel(new ImageIcon("PrepareGrowPlants1.png"));
+        JLabel p2 = new JLabel(new ImageIcon("PrepareGrowPlants2.png"));
+        JLabel p3 = new JLabel(new ImageIcon("PrepareGrowPlants3.png"));
+        p1.setSize(255, 103);
+        p2.setSize(255, 103);
+        p3.setSize(255, 103);
+        p1.setLocation(500, 400);
+        p2.setLocation(500, 400);
+        p3.setLocation(500, 400);
+
+        initPane.add(p1);
+        initPane.moveToFront(p1);
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+        initPane.moveToBack(p1);
+
+        initPane.add(p2);
+        initPane.moveToFront(p2);
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+        initPane.moveToBack(p2);
+
+        initPane.add(p3);
+        initPane.moveToFront(p3);
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+        initPane.moveToBack(p3);
     }
 }
