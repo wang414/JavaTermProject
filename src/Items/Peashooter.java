@@ -2,7 +2,7 @@ package Items;
 
 import javax.swing.*;
 
-public final class Peashooter extends CyclicPlant{
+public final class Peashooter extends CyclicPlant implements Attackable{
 
 	static String picPath = "";
 	static{

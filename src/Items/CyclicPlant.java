@@ -1,9 +1,9 @@
 package Items;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class CyclicPlant extends Plant{
+public class CyclicPlant extends Plant implements Attackable{
     Timer attackCycle;//攻击的循环线程
     Bullet bullet;//这个植物射出的子弹
     static String bulletPath;//子弹贴图的路径
@@ -29,7 +29,7 @@ public class CyclicPlant extends Plant{
         return x < z.x && y == z.y;
     }
     @Override
-    public Bullet tryAttack(ArrayList<Zombie> zombies)
+    public Bullet tryAttack(CopyOnWriteArrayList<Zombie> zombies)
     {
         //对僵尸尝试进行攻击
         Bullet res = null;
