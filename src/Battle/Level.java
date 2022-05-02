@@ -1,26 +1,158 @@
 package Battle;
 
+import Items.Basic_zombie;
+import Items.Conehead_zombie;
 import Items.Plant;
 import Items.Zombie;
-
 import java.awt.*;
-import java.util.Timer;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Random;
 
-public class Level {
-    int[] zombies;//按出现顺序存储的僵尸序列.zombies[i]表示第i个僵尸的类型,i是其编号
-    int[] positions;//position[i]表示第i个僵尸应该出现的行,如果不在正常行数内,就随机选取
-    int[] plants;//本关卡可选的植物,plant[i]表示本关卡可选植物的第i个植物的类型
-    long[] checkpoint;
+/** @author yf */
+
+public class Level {//调用initZombie()即可
+
+    int[] zombies=new int[50];//按出现顺序存储的僵尸序列.zombies[i]表示第i个僵尸的类型,i是其编号
+    int sumZombies;//僵尸总数目
+    int sumTypeZombies;//僵尸总种类数
+    int [][]typeZombies=new int[10][5];//僵尸基本数据 0 init_hp,1 int init_speed,2 int init_atk,3 double atk_speed,
+
+    int[] positions=new int[50];//position[i]表示第i个僵尸应该出现的行,如果不在正常行数内,就随机选取
+
+    int[] plants=new int[50];//本关卡可选的植物,plant[i]表示本关卡可选植物的第i个植物的类型
+    long[] checkpoint=new long[50];
     /* 为 k 个单调递增序列, 其中k为僵尸潮的次数, 0代表开始一波新的潮(需要判断所有僵尸已经全部死亡),
     checkpoint[i]>0时, 表示距离上一次僵尸潮时间为checkpoint[i]时,创建这个僵尸类型zombies[i],在第position[i]行
     */
+
     String name;   // 关卡名称
     String BackgroundPATH; //关卡贴图路径
     Image Background;
     int background_type; //0 白天草坪 1 黑夜草坪 2 白天泳池 3 黑夜泳池 5 屋顶
-    Level()
-    {
-        //读.txt进行关卡编辑
+
+    ArrayList<Zombie> zombies2=new ArrayList<>();
+
+    public Level() {
+        BufferedReader br;
+        File file = new File("test.txt");
+
+        try
+        {
+            br = new BufferedReader(new FileReader(file));
+            name = br.readLine();
+            BackgroundPATH = br.readLine();
+            //读入图片！！！Image=br.read();
+            background_type = Integer.parseInt(br.readLine());
+            int num = 0, type;
+
+            //读入每种僵尸的基本特征
+            sumTypeZombies= Integer.parseInt(br.readLine());
+            for(int i=0;i<sumTypeZombies;i++){
+                for(int j=0;j<4;j++){
+                    typeZombies[i][j]= Integer.parseInt(br.readLine());
+                }
+            }
+
+            //读入植物类型
+            while ((type = Integer.parseInt(br.readLine())) != -1)
+            {
+                plants[num] = type;
+                num++;
+            }
+
+            //读入僵尸类型
+            num=0;
+            while ((type = Integer.parseInt(br.readLine())) != -1)
+            {
+                zombies[num] = type;
+                num++;
+            }
+            sumZombies=num;
+
+            //读入僵尸位置
+            num=0;
+            while ((type = Integer.parseInt(br.readLine())) != -1)
+            {
+                Random rnd = new Random();
+                if (type == 0)
+                {
+                    type = rnd.nextInt(4) + 1;
+                }
+                positions[num] = type;
+                num++;
+            }
+
+            //读入checkpoint
+            long cp;num=0;
+            while ((cp = Long.parseLong(br.readLine())) != -1)
+            {
+                checkpoint[num] = cp;
+                num++;
+            }
+            br.close();
+        }
+        catch (IOException e)
+        {
+
+        }
     }
 
+    void initZombie()
+    {
+        Zombie z;
+        for(int i=0;i<sumZombies;i++)
+        {
+            if(checkpoint[i]>0){
+                try
+                {
+                    Thread.sleep(checkpoint[i]);
+                }
+                catch(InterruptedException ex)
+                {
+                    Thread.currentThread().interrupt();
+                }
+                z=getZombie(zombies[i],positions[i]);
+                zombies2.add(z);
+            }
+            else if(checkpoint[i]==-5)
+            {
+                while(!zombies2.isEmpty()){
+
+                }
+                z=getZombie(zombies[i],positions[i]);
+                zombies2.add(z);
+            }
+            else if(checkpoint[i]==0)
+            {
+                try
+                {
+                    Thread.sleep(5000);
+                }
+                catch(InterruptedException ex)
+                {
+                    Thread.currentThread().interrupt();
+                }
+                z=getZombie(zombies[i],positions[i]);
+                zombies2.add(z);
+            }
+        }
+    }
+
+    public Zombie getZombie(int Id, int positionY)
+    {
+        Zombie z = null;
+        switch (Id)
+        {
+            case 1:
+                z = new Basic_zombie(1,1,1,1,1,positionY,1);
+                        //Basic_zombie(int init_hp, int init_speed, int init_atk,
+                //				 double atk_speed, int x_, int y_, int number)
+                break;
+            case 2:
+                //z = new Conehead_zombie(1,1,1,1,1,1,1);
+                break;
+        }
+        return z;
+    }
 }
