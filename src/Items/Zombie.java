@@ -1,4 +1,7 @@
 package Items;
+
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public abstract class Zombie extends Creature{
 	public boolean isEating;
 
@@ -16,4 +19,5 @@ public abstract class Zombie extends Creature{
             setLocation(x, y);
         }
     }
+    abstract public void tryAttack(CopyOnWriteArrayList<Plant> plants);
 }

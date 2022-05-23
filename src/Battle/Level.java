@@ -4,10 +4,13 @@ import Items.Basic_zombie;
 import Items.Conehead_zombie;
 import Items.Plant;
 import Items.Zombie;
+
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /** @author yf */
 
@@ -31,10 +34,11 @@ public class Level {//调用initZombie()即可
     Image Background;
     int background_type; //0 白天草坪 1 黑夜草坪 2 白天泳池 3 黑夜泳池 5 屋顶
 
-    ArrayList<Zombie> zombies2=new ArrayList<>();
+    CopyOnWriteArrayList<Zombie> []zombies2;
 
-    public Level() {
+    public Level(CopyOnWriteArrayList<Zombie> []zombies2, JFrame windows, CopyOnWriteArrayList<Integer> chosenPlants) {
         BufferedReader br;
+        this.zombies2 = zombies2;
         File file = new File("test.txt");
 
         try

@@ -3,6 +3,7 @@ package Items;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 //author: zqh
 public class SunLight extends JButton {
@@ -13,8 +14,9 @@ public class SunLight extends JButton {
     int curY;
     int targetX;//阳光停止下落的位置
     int targetY;
+    long generateTime;
 
-    SunLight(int value, int spd, int x, int y,int tx,int ty)
+    public SunLight(int value, int spd, int x, int y,int tx,int ty)
     {
         sunValue = value;
         speed = spd;
@@ -22,13 +24,18 @@ public class SunLight extends JButton {
         curY = y;
         targetX = tx;
         targetY = ty;
+        generateTime = new Date().getTime();
     }
-    void advance()
+
+    public void advance()
     {
         if(curY > targetY)
         {
             curY += speed;
             this.setLocation(curX, curY);
         }
+    }
+    public long getGenerateTime(){
+        return generateTime;
     }
 }
