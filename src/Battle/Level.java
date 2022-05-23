@@ -14,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /** @author yf */
 
-public class Level {//调用initZombie()即可
+public class Level extends Thread{//调用initZombie()即可
 
     int[] zombies=new int[50];//按出现顺序存储的僵尸序列.zombies[i]表示第i个僵尸的类型,i是其编号
     int sumZombies;//僵尸总数目
@@ -62,6 +62,7 @@ public class Level {//调用initZombie()即可
             while ((type = Integer.parseInt(br.readLine())) != -1)
             {
                 plants[num] = type;
+                chosenPlants.add(type);
                 num++;
             }
 
@@ -95,11 +96,18 @@ public class Level {//调用initZombie()即可
                 num++;
             }
             br.close();
+            Thread t=new Thread(this);
+            t.start();
         }
         catch (IOException e)
         {
 
         }
+    }
+
+    @Override
+    public void run(){
+        initZombie();
     }
 
     void initZombie()
@@ -117,15 +125,21 @@ public class Level {//调用initZombie()即可
                     Thread.currentThread().interrupt();
                 }
                 z=getZombie(zombies[i],positions[i]);
-                zombies2.add(z);
+                zombies2[positions[i]].add(z);
             }
             else if(checkpoint[i]==-5)
             {
-                while(!zombies2.isEmpty()){
-
+                while(true){
+                    int flag=1;
+                    for(int col=0;col<5;col++){
+                        if(!zombies2[col].isEmpty()) {
+                            flag=0;
+                        }
+                    }
+                    if(flag==1)break;
                 }
                 z=getZombie(zombies[i],positions[i]);
-                zombies2.add(z);
+                zombies2[positions[i]].add(z);
             }
             else if(checkpoint[i]==0)
             {
@@ -138,7 +152,7 @@ public class Level {//调用initZombie()即可
                     Thread.currentThread().interrupt();
                 }
                 z=getZombie(zombies[i],positions[i]);
-                zombies2.add(z);
+                zombies2[positions[i]].add(z);
             }
         }
     }
