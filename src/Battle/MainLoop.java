@@ -11,6 +11,7 @@ import java.awt.image.ImageObserver;
 import java.text.AttributedCharacterIterator;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Random;
 
 /**
  * to paint battles.
@@ -158,15 +159,36 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         JLayeredPane initPane = new JLayeredPane();
         window.setContentPane(initPane);
 
+        JLabel bg = new JLabel(bgImageIcon);
+        bg.setSize(2100, 900);
+        bg.setOpaque(false);
+        bg.setLocation(0, 0);
+        initPane.moveToBack(bg);
+
         //导入关卡信息
         //渲染地图与出没僵尸
+        JLabel[] zombies = new JLabel[5];
+        Random r = new Random();
+        for (int i = 0; i < 5; i++) {
+            zombies[i] = new JLabel(new ImageIcon("out/production/PVZ/img/Zombie0.png"));
+            zombies[i].setLocation(1600 + r.nextInt(300), 100 + r.nextInt(500));
+            zombies[i].setSize(231, 200);
+            zombies[i].setBackground(null);
+            window.getLayeredPane().add(zombies[i]);
+            window.getLayeredPane().moveToFront(zombies[i]);
+        }
+
         bgArrived = false;
         bgBacked = false;
 
+        //前往选植物，展示僵尸
         Timer t = new Timer(1, (e) -> {
             SwingUtilities.invokeLater(()->{
                 if (!bgArrived && bgLabel.getLocation().x > -900) {
-                    bgLabel.setLocation(bgLabel.getLocation().x - 5, bgLabel.getLocation().y);
+                    bg.setLocation(bg.getLocation().x - 5, bg.getLocation().y);
+                    for (int i = 0; i < 5; i++) {
+                        zombies[i].setLocation( zombies[i].getLocation().x - 5, zombies[i].getLocation().y);
+                    }
                 } else {
                     bgArrived = true;
                 }
@@ -179,11 +201,21 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         }
         t.stop();
 
-        //选植物
+        //选植物，展示僵尸
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            //TODO: handle exception
+        }
+
+        //返回主战场
         t = new Timer(1, (e) -> {
             SwingUtilities.invokeLater(()->{
                 if (!bgBacked && bgLabel.getLocation().x < -340) {
-                    bgLabel.setLocation(bgLabel.getLocation().x - 5, bgLabel.getLocation().y);
+                    bg.setLocation(bg.getLocation().x + 5, bg.getLocation().y);
+                    for (int i = 0; i < 5; i++) {
+                        zombies[i].setLocation( zombies[i].getLocation().x + 5, zombies[i].getLocation().y);
+                    }
                 } else {
                     bgBacked = true;
                 }
@@ -196,9 +228,9 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         t.stop();
 
         //开始战斗
-        JLabel p1 = new JLabel(new ImageIcon("PrepareGrowPlants1.png"));
-        JLabel p2 = new JLabel(new ImageIcon("PrepareGrowPlants2.png"));
-        JLabel p3 = new JLabel(new ImageIcon("PrepareGrowPlants3.png"));
+        JLabel p1 = new JLabel(sentence1);
+        JLabel p2 = new JLabel(sentence2);
+        JLabel p3 = new JLabel(sentence3);
         p1.setSize(255, 103);
         p2.setSize(255, 103);
         p3.setSize(255, 103);

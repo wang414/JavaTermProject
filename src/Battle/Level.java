@@ -13,7 +13,6 @@ import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /** @author yf */
-
 public class Level extends Thread{//调用initZombie()即可
 
     int[] zombies=new int[50];//按出现顺序存储的僵尸序列.zombies[i]表示第i个僵尸的类型,i是其编号
