@@ -276,7 +276,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 /**
  *
  */
-class SeedBank extends JFrame implements ActionListener
+class SeedBank extends JFrame
 {
     JButton Plant1 = new JButton("Plant1"); // 后期text应当改成以Plant1图片的构造
     JButton Plant2 = new JButton("Plant2"); // 后期text应当改成以Plant2图片的构造
@@ -288,8 +288,6 @@ class SeedBank extends JFrame implements ActionListener
     JButton Plant8 = new JButton("Plant8"); // 后期text应当改成以Plant8图片的构造
     JButton Plant9 = new JButton("Plant9"); // 后期text应当改成以Plant9图片的构造
     JButton Plant10 = new JButton("Plant10"); // 后期text应当改成以Plant10图片的构造
-
-    boolean flag; // 标记是否应当放置
 
     public SeedBank()
     {
