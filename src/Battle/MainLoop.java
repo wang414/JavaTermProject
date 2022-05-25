@@ -6,8 +6,7 @@ import Items.Bullet;
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.image.ImageObserver;
 import java.text.AttributedCharacterIterator;
 import java.util.*;
@@ -21,13 +20,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 
-public class MainLoop {
+public class MainLoop implements MouseListener, MouseMotionListener{
 
     JFrame window;
-    Level curLevel;
+    int curLevel = 0;
 
-    CopyOnWriteArrayList<Zombie> []zombies;
-    CopyOnWriteArrayList<Plant> []plants;
+    CopyOnWriteArrayList<Zombie> []zombies = new CopyOnWriteArrayList[5];
+
+    CopyOnWriteArrayList<Plant> []plants = new CopyOnWriteArrayList[5];
     CopyOnWriteArrayList<Bullet> bullets;
     CopyOnWriteArrayList<SunLight> sunLights;
     CopyOnWriteArrayList<Integer> chosenPlants;
@@ -36,9 +36,30 @@ public class MainLoop {
     Timer createSun;
     Timer advanceAll;
     JLayeredPane battlePane;
-    static final String bgPath = "";
-    JLabel bgLabel = new JLabel(new ImageIcon(bgPath));
 
+    static ImageIcon bgImageIcon, sentence1, sentence2, sentence3;
+    JLabel bgLabel = new JLabel(bgImageIcon);
+
+    static{
+        bgImageIcon = new ImageIcon("out/production/PVZ/img/Background.jpg");
+        sentence1 = new ImageIcon("out/production/PVZ/img/SentencePlant.png");
+        sentence2 = new ImageIcon("out/production/PVZ/img/SentencePrepare.png");
+        sentence3 = new ImageIcon("out/production/PVZ/img/SentenceSet.png");
+
+    }
+
+
+    /**
+     * 用于测试
+     * @param args
+     */
+    public static void main(String[] args) {
+        JFrame jFrame = new JFrame("植物大战僵尸战斗模块测试");
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jFrame.setSize(1200,900);
+        jFrame.setVisible(true);
+        new MainLoop(jFrame);
+    }
 
     public MainLoop(JFrame windows)
     {
@@ -49,8 +70,15 @@ public class MainLoop {
          */
         //初始化
         window = windows;
+        for(int i = 0; i < 5; ++i)
+            zombies[i] = new CopyOnWriteArrayList<>();
+        for(int i = 0; i < 5; ++i)
+            plants[i] = new CopyOnWriteArrayList<>();
+        //new Level(curLevel, zombies, window, chosenPlants);
         Init();
+        window.dispose();
         window.setLayout(null);
+        window.addMouseListener(this);
         battlePane = new JLayeredPane();
         window.setContentPane(battlePane);
         battlePane.add(bgLabel);
@@ -115,9 +143,14 @@ public class MainLoop {
                 zombie.tryAttack(plants[i]);
             }
         }
-        for (SunLight sunLight : sunLights)
+        long presentTime = new Date().getTime();
+        long delay = 10000; //automatically disposed after 10000ms
+        for (SunLight sunLight : sunLights) {
             sunLight.advance();
-        sunLights.removeIf(sunLight -> new Date().getTime() > 10000 + sunLight.getGenerateTime());
+            if (sunLight.getGenerateTime() + delay < presentTime)
+                window.getContentPane().remove(sunLight);
+        }
+        sunLights.removeIf(sunLight -> presentTime > delay + sunLight.getGenerateTime());
     }
 
     volatile boolean bgArrived, bgBacked; //背景加载地图时移动判定
@@ -200,6 +233,43 @@ public class MainLoop {
         }
         initPane.moveToBack(p3);
     }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) //判断坐标
+    {
+
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
 
 
@@ -235,35 +305,9 @@ class SeedBank extends JFrame implements ActionListener
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(BorderLayout.CENTER, pnl);
 
-        Plant1.addActionListener(this);
-        Plant2.addActionListener(this);
-        Plant3.addActionListener(this);
-        Plant4.addActionListener(this);
-        Plant5.addActionListener(this);
-        Plant6.addActionListener(this);
-        Plant7.addActionListener(this);
-        Plant8.addActionListener(this);
-        Plant9.addActionListener(this);
-        Plant10.addActionListener(this);
 
-        flag = false;
+
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        Object source = e.getSource();
-        if (source == Plant1)
-        {
 
-        }
-        else if (source == Plant2)
-        {
-
-        }
-        else if (source == Plant3)
-        {
-
-        }
-    }
 }

@@ -35,12 +35,13 @@ public class Level extends Thread{//调用initZombie()即可
     int background_type; //0 白天草坪 1 黑夜草坪 2 白天泳池 3 黑夜泳池 5 屋顶
 
     CopyOnWriteArrayList<Zombie> []zombies2;
+    JFrame window;
 
-    public Level(CopyOnWriteArrayList<Zombie> []zombies2, JFrame windows, CopyOnWriteArrayList<Integer> chosenPlants) {
+    public Level(int level, CopyOnWriteArrayList<Zombie> []zombies2, JFrame windows, CopyOnWriteArrayList<Integer> chosenPlants) {
         BufferedReader br;
         this.zombies2 = zombies2;
+        this.window = windows;
         File file = new File("test.txt");
-
         try
         {
             br = new BufferedReader(new FileReader(file));
@@ -126,6 +127,8 @@ public class Level extends Thread{//调用initZombie()即可
                 }
                 z=getZombie(zombies[i],positions[i]);
                 zombies2[positions[i]].add(z);
+                Zombie finalZ = z;
+                SwingUtilities.invokeLater(()->window.getContentPane().add(finalZ));
             }
             else if(checkpoint[i]==-5)
             {
@@ -140,6 +143,8 @@ public class Level extends Thread{//调用initZombie()即可
                 }
                 z=getZombie(zombies[i],positions[i]);
                 zombies2[positions[i]].add(z);
+                Zombie finalZ = z;
+                SwingUtilities.invokeLater(()->window.getContentPane().add(finalZ));
             }
             else if(checkpoint[i]==0)
             {
@@ -153,6 +158,8 @@ public class Level extends Thread{//调用initZombie()即可
                 }
                 z=getZombie(zombies[i],positions[i]);
                 zombies2[positions[i]].add(z);
+                Zombie finalZ = z;
+                SwingUtilities.invokeLater(()->window.getContentPane().add(finalZ));
             }
         }
     }
@@ -163,7 +170,8 @@ public class Level extends Thread{//调用initZombie()即可
         switch (Id)
         {
             case 1:
-                z = new Basic_zombie(1,1,1,1,1,positionY,1);
+                z = new Basic_zombie(1,5,5,5,1,positionY,1);
+
                         //Basic_zombie(int init_hp, int init_speed, int init_atk,
                 //				 double atk_speed, int x_, int y_, int number)
                 break;
