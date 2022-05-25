@@ -31,7 +31,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     CopyOnWriteArrayList<Plant> []plants = new CopyOnWriteArrayList[5];
     CopyOnWriteArrayList<Bullet> bullets;
     CopyOnWriteArrayList<SunLight> sunLights;
-    CopyOnWriteArrayList<Integer> chosenPlants;
+    CopyOnWriteArrayList<Integer> chosenPlants = new CopyOnWriteArrayList<Integer>();
     int sunLightValue = 100;
     Timer createZombies;
     Timer createSun;
