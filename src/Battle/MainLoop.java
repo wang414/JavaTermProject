@@ -43,9 +43,9 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
     static{
         bgImageIcon = new ImageIcon("out/production/PVZ/img/Background.jpg");
-        sentence1 = new ImageIcon("out/production/PVZ/img/SentencePlant.png");
-        sentence2 = new ImageIcon("out/production/PVZ/img/SentencePrepare.png");
-        sentence3 = new ImageIcon("out/production/PVZ/img/SentenceSet.png");
+        sentence1 = new ImageIcon("out/production/PVZ/img/SentencePrepare.png");
+        sentence2 = new ImageIcon("out/production/PVZ/img/SentenceSet.png");
+        sentence3 = new ImageIcon("out/production/PVZ/img/SentencePlant.png");
 
     }
 
@@ -70,6 +70,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
          */
         //初始化
         window = windows;
+        //Init();
         for(int i = 0; i < 5; ++i)
             zombies[i] = new CopyOnWriteArrayList<>();
         for(int i = 0; i < 5; ++i)
@@ -159,6 +160,9 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 //            }
         for(int i = 0; i < 5; ++i) {
             for (Zombie zombie : zombies[i]) {
+                if (zombie == null) {
+                    System.out.println("Dead Zombie!");
+                }
                 zombie.advance();
                 //zombie.tryAttack(plants[i]);
             }
@@ -176,13 +180,18 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
     volatile boolean bgArrived, bgBacked; //背景加载地图时移动判定
     private void Init() {
+        System.out.println("Start init!");
+
         JLayeredPane initPane = new JLayeredPane();
         window.setContentPane(initPane);
+        window.setLayout(null);
+        window.setVisible(true);
 
         JLabel bg = new JLabel(bgImageIcon);
         bg.setSize(2100, 900);
         bg.setOpaque(false);
         bg.setLocation(0, 0);
+        initPane.add(bg);
         initPane.moveToBack(bg);
 
         //导入关卡信息
@@ -190,12 +199,13 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         JLabel[] zombies = new JLabel[5];
         Random r = new Random();
         for (int i = 0; i < 5; i++) {
-            zombies[i] = new JLabel(new ImageIcon("out/production/PVZ/img/Zombie0.png"));
+            zombies[i] = new JLabel(new ImageIcon("out/production/PVZ/img/Zombie0.gif"));
             zombies[i].setLocation(1600 + r.nextInt(300), 100 + r.nextInt(500));
             zombies[i].setSize(231, 200);
             zombies[i].setBackground(null);
-            window.getLayeredPane().add(zombies[i]);
-            window.getLayeredPane().moveToFront(zombies[i]);
+
+            initPane.add(zombies[i]);
+            initPane.moveToFront(zombies[i]);
         }
 
         bgArrived = false;
@@ -204,7 +214,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         //前往选植物，展示僵尸
         Timer t = new Timer(1, (e) -> {
             SwingUtilities.invokeLater(()->{
-                if (!bgArrived && bgLabel.getLocation().x > -900) {
+                if (!bgArrived && bg.getLocation().x > -900) {
                     bg.setLocation(bg.getLocation().x - 5, bg.getLocation().y);
                     for (int i = 0; i < 5; i++) {
                         zombies[i].setLocation( zombies[i].getLocation().x - 5, zombies[i].getLocation().y);
@@ -231,7 +241,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         //返回主战场
         t = new Timer(1, (e) -> {
             SwingUtilities.invokeLater(()->{
-                if (!bgBacked && bgLabel.getLocation().x < -340) {
+                if (!bgBacked && bg.getLocation().x < -340) {
                     bg.setLocation(bg.getLocation().x + 5, bg.getLocation().y);
                     for (int i = 0; i < 5; i++) {
                         zombies[i].setLocation( zombies[i].getLocation().x + 5, zombies[i].getLocation().y);
@@ -354,10 +364,5 @@ class SeedBank extends JFrame
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(BorderLayout.CENTER, pnl);
-
-
-
     }
-
-
 }

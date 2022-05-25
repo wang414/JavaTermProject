@@ -33,5 +33,9 @@ public abstract class Creature extends JButton {
 		x = x_;
 		y = y_;
 		number = init_number;
+
+		setBorder(null);//除去边框
+		setFocusPainted(false);//除去焦点的框
+		setContentAreaFilled(false);//除去默认的背景填充
 	}
 }

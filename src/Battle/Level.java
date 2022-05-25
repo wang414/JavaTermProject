@@ -82,6 +82,7 @@ public class Level extends Thread{//调用initZombie()即可
                 Random rnd = new Random();
                 if (type == 0)
                 {
+
                     type = rnd.nextInt(4) + 1;
                 }
                 positions[num] = type;
