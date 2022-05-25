@@ -34,12 +34,12 @@ public class Level extends Thread{//调用initZombie()即可
     int background_type; //0 白天草坪 1 黑夜草坪 2 白天泳池 3 黑夜泳池 5 屋顶
 
     CopyOnWriteArrayList<Zombie> []zombies2;
-    JFrame window;
+    JLayeredPane bgpane;
 
-    public Level(int level, CopyOnWriteArrayList<Zombie> []zombies2, JFrame windows, CopyOnWriteArrayList<Integer> chosenPlants) {
+    public Level(int level, CopyOnWriteArrayList<Zombie> []zombies2, JLayeredPane bgpane, CopyOnWriteArrayList<Integer> chosenPlants) {
         BufferedReader br;
         this.zombies2 = zombies2;
-        this.window = windows;
+        this.bgpane = bgpane;
         File file = new File("test.txt");
         try
         {
@@ -125,9 +125,16 @@ public class Level extends Thread{//调用initZombie()即可
                     Thread.currentThread().interrupt();
                 }
                 z=getZombie(zombies[i],positions[i]);
-                zombies2[positions[i]].add(z);
+                System.out.println(z);
                 Zombie finalZ = z;
-                SwingUtilities.invokeLater(()->window.getContentPane().add(finalZ));
+                if (z != null) {
+                    System.out.println("create");
+                    zombies2[positions[i]].add(z);
+                    SwingUtilities.invokeLater(()->{
+                        bgpane.add(finalZ);
+                        bgpane.moveToFront(finalZ);
+                    });
+                }
             }
             else if(checkpoint[i]==-5)
             {
@@ -141,9 +148,17 @@ public class Level extends Thread{//调用initZombie()即可
                     if(flag==1)break;
                 }
                 z=getZombie(zombies[i],positions[i]);
-                zombies2[positions[i]].add(z);
                 Zombie finalZ = z;
-                SwingUtilities.invokeLater(()->window.getContentPane().add(finalZ));
+                if (z != null) {
+                    System.out.println("create");
+                    zombies2[positions[i]].add(z);
+                    SwingUtilities.invokeLater(()->{
+                        bgpane.add(finalZ);
+                        bgpane.moveToFront(finalZ);
+                    });
+
+                }
+                //window.getContentPane().add(finalZ);
             }
             else if(checkpoint[i]==0)
             {
@@ -156,25 +171,35 @@ public class Level extends Thread{//调用initZombie()即可
                     Thread.currentThread().interrupt();
                 }
                 z=getZombie(zombies[i],positions[i]);
-                zombies2[positions[i]].add(z);
                 Zombie finalZ = z;
-                SwingUtilities.invokeLater(()->window.getContentPane().add(finalZ));
+                if (z != null) {
+                    zombies2[positions[i]].add(z);
+                    System.out.println("create");
+                    SwingUtilities.invokeLater(()->{
+                        bgpane.add(finalZ);
+                        bgpane.moveToFront(finalZ);
+                    });
+                }
+
+                //window.getContentPane().add(finalZ);
             }
         }
     }
 
     public Zombie getZombie(int Id, int positionY)
     {
+
         Zombie z = null;
         switch (Id)
         {
             case 1:
-                z = new Basic_zombie(1,5,5,5,1,positionY,1);
+                z = new Basic_zombie(1,5,5,5,1200,100 + 150*positionY,1);
 
                         //Basic_zombie(int init_hp, int init_speed, int init_atk,
                 //				 double atk_speed, int x_, int y_, int number)
                 break;
             case 2:
+                z = new Basic_zombie(1,5,5,5,1200,100 + 150*positionY,1);
                 //z = new Conehead_zombie(1,1,1,1,1,1,1);
                 break;
         }

@@ -12,7 +12,7 @@ public abstract class Creature extends JButton {
 	long last_atk;
 	int x;
 	int y;
-	static ImageIcon img;
+	public static ImageIcon img;
 	int number;
 
 	/**
