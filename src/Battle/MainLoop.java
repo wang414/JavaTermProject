@@ -207,7 +207,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         //前往选植物，展示僵尸
         Timer t = new Timer(1, (e) -> {
             SwingUtilities.invokeLater(()->{
-                if (!bgArrived && bgLabel.getLocation().x > -900) {
+                if (!bgArrived && bg.getLocation().x > -900) {
                     bg.setLocation(bg.getLocation().x - 5, bg.getLocation().y);
                     for (int i = 0; i < 5; i++) {
                         zombies[i].setLocation( zombies[i].getLocation().x - 5, zombies[i].getLocation().y);
@@ -234,7 +234,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         //返回主战场
         t = new Timer(1, (e) -> {
             SwingUtilities.invokeLater(()->{
-                if (!bgBacked && bgLabel.getLocation().x < -340) {
+                if (!bgBacked && bg.getLocation().x < -340) {
                     bg.setLocation(bg.getLocation().x + 5, bg.getLocation().y);
                     for (int i = 0; i < 5; i++) {
                         zombies[i].setLocation( zombies[i].getLocation().x + 5, zombies[i].getLocation().y);
