@@ -41,6 +41,9 @@ public class Level extends Thread{//调用initZombie()即可
         this.zombies2 = zombies2;
         this.bgpane = bgpane;
         File file = new File("test.txt");
+        for(int i=0;i<5;i++){
+            zombies2[i]=new CopyOnWriteArrayList<>();
+        }
         try
         {
             br = new BufferedReader(new FileReader(file));
