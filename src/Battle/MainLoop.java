@@ -38,6 +38,9 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     Timer advanceAll;
     JLayeredPane battlePane;
 
+    SeedBank seedBank;//植物列表
+    Plant curPlant;//即将种下去的植物
+
     static ImageIcon bgImageIcon, sentence1, sentence2, sentence3;
 
 
@@ -309,8 +312,15 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     @Override
     public void mouseClicked(MouseEvent e) //判断坐标
     {
-
-
+        if(e.getX() > 10 && e.getY() > 50)//是否在可种植区域内
+        {
+            if(curPlant != null)
+            {
+                curPlant.setX(e.getX());//调整植物坐标
+                curPlant.setY(e.getY());
+                plants[e.getY() / (900 / 5)].add(curPlant);//种进去
+            }
+        }
     }
 
     @Override
@@ -336,9 +346,10 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
 
 /**
- *
+ * 用非顶层容器JPanel实现，需将JButton的初始化参数改成对应的图片数据，需调整size
+ * 初始化需要调用init()方法
  */
-class SeedBank extends JFrame
+class SeedBank extends JPanel
 {
     JButton Plant1 = new JButton("Plant1"); // 后期text应当改成以Plant1图片的构造
     JButton Plant2 = new JButton("Plant2"); // 后期text应当改成以Plant2图片的构造
@@ -351,18 +362,15 @@ class SeedBank extends JFrame
     JButton Plant9 = new JButton("Plant9"); // 后期text应当改成以Plant9图片的构造
     JButton Plant10 = new JButton("Plant10"); // 后期text应当改成以Plant10图片的构造
 
-    public SeedBank()
+    public void init()
     {
-        super("SeedBank");
+        this.setLayout(new GridLayout());
+        this.add(Plant1);   this.add(Plant2);
+        this.add(Plant3);   this.add(Plant4);
+        this.add(Plant5);   this.add(Plant6);
+        this.add(Plant7);   this.add(Plant8);
+        this.add(Plant9);   this.add(Plant10);
 
-        JPanel pnl = new JPanel(new GridLayout());
-        pnl.add(Plant1);   pnl.add(Plant2);
-        pnl.add(Plant3);   pnl.add(Plant4);
-        pnl.add(Plant5);   pnl.add(Plant6);
-        pnl.add(Plant7);   pnl.add(Plant8);
-        pnl.add(Plant9);   pnl.add(Plant10);
-
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(BorderLayout.CENTER, pnl);
+        this.setSize(100, 200);
     }
 }
