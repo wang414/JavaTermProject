@@ -38,6 +38,9 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     Timer advanceAll;
     JLayeredPane battlePane;
 
+    SeedBank seedBank;//植物列表
+    Plant curPlant;//即将种下去的植物
+
     static ImageIcon bgImageIcon, sentence1, sentence2, sentence3;
     JLabel bgLabel = new JLabel(bgImageIcon);
 
@@ -279,8 +282,15 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     @Override
     public void mouseClicked(MouseEvent e) //判断坐标
     {
-
-
+        if(e.getX() > 10 && e.getY() > 50)//是否在可种植区域内
+        {
+            if(curPlant != null)
+            {
+                curPlant.setX(e.getX());//调整植物坐标
+                curPlant.setY(e.getY());
+                plants[e.getY() / (900 / 5)].add(curPlant);//种进去
+            }
+        }
     }
 
     @Override
