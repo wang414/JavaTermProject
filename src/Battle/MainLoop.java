@@ -1,8 +1,6 @@
 package Battle;
-import Items.Plant;
-import Items.Zombie;
-import Items.SunLight;
-import Items.Bullet;
+import Items.*;
+
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
@@ -12,6 +10,8 @@ import java.text.AttributedCharacterIterator;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.Random;
+
+import static java.lang.Thread.sleep;
 
 /**
  * to paint battles.
@@ -29,8 +29,8 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     CopyOnWriteArrayList<Zombie> []zombies = new CopyOnWriteArrayList[5];
 
     CopyOnWriteArrayList<Plant> []plants = new CopyOnWriteArrayList[5];
-    CopyOnWriteArrayList<Bullet> bullets;
-    CopyOnWriteArrayList<SunLight> sunLights;
+    CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
+    CopyOnWriteArrayList<SunLight> sunLights = new CopyOnWriteArrayList<>();
     CopyOnWriteArrayList<Integer> chosenPlants = new CopyOnWriteArrayList<Integer>();
     int sunLightValue = 100;
     Timer createZombies;
@@ -42,7 +42,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     Plant curPlant;//即将种下去的植物
 
     static ImageIcon bgImageIcon, sentence1, sentence2, sentence3;
-    JLabel bgLabel = new JLabel(bgImageIcon);
+
 
     static{
         bgImageIcon = new ImageIcon("out/production/PVZ/img/Background.jpg");
@@ -65,8 +65,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         new MainLoop(jFrame);
     }
 
-    public MainLoop(JFrame windows)
-    {
+    public MainLoop(JFrame windows){
         /**
          * should be disposed before calling.
          *
@@ -78,17 +77,28 @@ public class MainLoop implements MouseListener, MouseMotionListener{
             zombies[i] = new CopyOnWriteArrayList<>();
         for(int i = 0; i < 5; ++i)
             plants[i] = new CopyOnWriteArrayList<>();
-        //new Level(curLevel, zombies, window, chosenPlants);
-        Init();
+
         window.dispose();
-        window.setLayout(null);
-        window.addMouseListener(this);
+
+
+        // window.addMouseListener(this);
         battlePane = new JLayeredPane();
         window.setContentPane(battlePane);
+        window.setLayout(null);
+        window.setVisible(true);
+        JLabel bgLabel = new JLabel(bgImageIcon);
+        bgLabel.setSize(2100, 900);
+        //bgLabel.setOpaque(false);
+        bgLabel.setLocation(-340, 0);
         battlePane.add(bgLabel);
-        bgLabel.setBounds(-340,0,2100,900);
+        battlePane.moveToBack(bgLabel);
+        window.repaint();
+
+
         battlePane.setPosition(bgLabel, -1);
 
+        new Level(curLevel, zombies, battlePane, chosenPlants);
+        //battlePane.add(new JButton(Basic_zombie.img));
         createSun = new Timer(5000, (l)->generateSun());
         createSun.start();
         //判定:Compute
@@ -98,11 +108,14 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         });
         advanceAll.start();
 
+        System.out.println("finish");
 
         //交互内容:
         //植物,铲子的拖动,暂停,阳光拾取
-
-
+        int i = 10;
+        while(i > 9) {
+            ;
+        }
         //结束
         advanceAll.stop();
         createSun.stop();
@@ -117,34 +130,40 @@ public class MainLoop implements MouseListener, MouseMotionListener{
      * automatically generate sunlight.
      */
     void generateSun(){
+        System.out.println("generate sun");
         Random rd = new Random();
-        int Y = rd.nextInt(100, window.getWidth() - 100);
-        int tx = rd.nextInt( 100, window.getHeight() - 100);
-        SunLight sunLight = new SunLight(25, 5, 0, Y, tx, Y);
+        int X = rd.nextInt(100, window.getWidth() - 100);
+        int ty = rd.nextInt( 100, window.getHeight() - 100);
+        SunLight sunLight = new SunLight(25, 5, X, 0, X, ty);
         sunLight.addActionListener((l)->{
             sunLightValue += 25;
+            sunLights.remove(sunLight);
             SwingUtilities.invokeLater(()->{
                 window.remove(sunLight);
                 window.repaint();
             });
         });
         sunLights.add(sunLight);
-        SwingUtilities.invokeLater(()->{window.getContentPane().add(sunLight);});
+        SwingUtilities.invokeLater(()->{
+            battlePane.add(sunLight);
+            battlePane.moveToFront(sunLight);
+        });
+
     }
 
 
     private void compute()
     {
         //植物的行为:尝试对每一个僵尸发起攻击
-        for(int i = 0;i < 5; ++i)
-            for(Plant plant : plants[i]){
-                Bullet tempBullet = plant.tryAttack(zombies[i]);
-                if(tempBullet != null) { bullets.add(tempBullet); }
-            }
+//        for(int i = 0;i < 5; ++i)
+//            for(Plant plant : plants[i]){
+//                Bullet tempBullet = plant.tryAttack(zombies[i]);
+//                if(tempBullet != null) { bullets.add(tempBullet); }
+//            }
         for(int i = 0; i < 5; ++i) {
             for (Zombie zombie : zombies[i]) {
                 zombie.advance();
-                zombie.tryAttack(plants[i]);
+                //zombie.tryAttack(plants[i]);
             }
         }
         long presentTime = new Date().getTime();
@@ -155,6 +174,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
                 window.getContentPane().remove(sunLight);
         }
         sunLights.removeIf(sunLight -> presentTime > delay + sunLight.getGenerateTime());
+
     }
 
     volatile boolean bgArrived, bgBacked; //背景加载地图时移动判定
@@ -206,7 +226,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
         //选植物，展示僵尸
         try {
-            Thread.sleep(3000);
+            sleep(3000);
         } catch (Exception e) {
             //TODO: handle exception
         }
@@ -244,7 +264,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         initPane.add(p1);
         initPane.moveToFront(p1);
         try {
-            Thread.sleep(1000);
+            sleep(1000);
         } catch (Exception e) {
             //TODO: handle exception
         }
@@ -253,7 +273,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         initPane.add(p2);
         initPane.moveToFront(p2);
         try {
-            Thread.sleep(1000);
+            sleep(1000);
         } catch (Exception e) {
             //TODO: handle exception
         }
@@ -262,7 +282,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         initPane.add(p3);
         initPane.moveToFront(p3);
         try {
-            Thread.sleep(1000);
+            sleep(1000);
         } catch (Exception e) {
             //TODO: handle exception
         }
