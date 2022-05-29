@@ -1,15 +1,12 @@
 package MainMenu;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+// Menu类，其他组的同学应该不会用到。
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-
 
 public class Menu extends JPanel {
     // 背景图路径数组
     static String[] bgImgPath={"0.png","1.png","2.png","3.png"};
+    static boolean firstClicked=true;
     private Image menuBackgroundImg;// 背景图图片
     private javax.swing.JPanel menuPanel;
     public Menu(int id) {// Menu初始化
@@ -18,23 +15,23 @@ public class Menu extends JPanel {
         //.out.println("启动初始化");
         menuPanel = new javax.swing.JPanel();
         setPreferredSize(new java.awt.Dimension(1200, 900));
-
         menuPanel.setOpaque(false);
         menuPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if(id<2){// 还是感觉点一下换一个窗口太sb了，就整两个算了。。
                     MainMenu.change(id);
-                }else{
-                    System.out.println("请输入关卡信息");
+                }else{// 进入关卡选择
+                    if(firstClicked) {// 防止多次点击
+                        MainMenu.selectGame();
+                        firstClicked=false;
+                    }
                 }
-                // 进入关卡选择
-
             }
         });
-
         // 接下来初始化界面
         // 采用分组布局
         // 这个代码来自GitHub，完全看不懂，区域判定也是寄的，最终效果是鼠标点击任意位置都执行……
+        // 5.30还是修不出来，红豆泥私密马赛
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
         menuPanel.setLayout(menuPanelLayout);
         menuPanelLayout.setHorizontalGroup(
@@ -64,7 +61,6 @@ public class Menu extends JPanel {
         );
         // 画布大小
         setSize(1200, 900);
-
         // 背景图
         menuBackgroundImg = new ImageIcon(this.getClass().getResource(bgImgPath[id])).getImage();
 
@@ -73,6 +69,5 @@ public class Menu extends JPanel {
     public void paintComponent(Graphics g) {// 绘制背景图
         super.paintComponent(g);
         g.drawImage(menuBackgroundImg, 0, 0, null);
-
     }
 }
