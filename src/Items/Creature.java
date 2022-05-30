@@ -24,7 +24,7 @@ public abstract class Creature extends JButton {
 	Creature(int init_hp, int init_speed, int init_atk,
 			 double init_atk_speed, int x_, int y_, int init_number)
 	{
-
+		super(img);
 		hp = init_hp;
 		speed = init_speed;
 		atk = init_atk;
@@ -37,6 +37,7 @@ public abstract class Creature extends JButton {
 		setBorder(null);//除去边框
 		setFocusPainted(false);//除去焦点的框
 		setContentAreaFilled(false);//除去默认的背景填充
+		setLocation(x, y);
 	}
 
 	public void setX(int x) {

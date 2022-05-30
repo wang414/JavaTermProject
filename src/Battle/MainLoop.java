@@ -114,6 +114,13 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         //battlePane.add(new JButton(Basic_zombie.img));
         createSun = new Timer(5000, (l)->generateSun());
         createSun.start();
+
+        //debug
+        Peashooter tmpShooter = new Peashooter(100, 0, 1, 1, 500, 500, 0);
+        plants[2].add(tmpShooter);
+        battlePane.add(tmpShooter);
+        battlePane.moveToFront(tmpShooter);
+
         //判定:Compute
         advanceAll = new Timer(30, (e) -> {
             compute();
