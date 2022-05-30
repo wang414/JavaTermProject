@@ -35,7 +35,10 @@ public class Level extends Thread{//调用initZombie()即可
 
     CopyOnWriteArrayList<Zombie> []zombies2;
     JLayeredPane bgpane;
-
+    Thread getThread(){
+        Thread t=new Thread(this);
+        return t;
+    }
     public Level(int level, CopyOnWriteArrayList<Zombie> []zombies2, JLayeredPane bgpane, CopyOnWriteArrayList<Integer> chosenPlants) {
         BufferedReader br;
         this.zombies2 = zombies2;
@@ -100,8 +103,7 @@ public class Level extends Thread{//调用initZombie()即可
                 num++;
             }
             br.close();
-            Thread t=new Thread(this);
-            t.start();
+
         }
         catch (IOException e)
         {
@@ -132,7 +134,7 @@ public class Level extends Thread{//调用initZombie()即可
                 System.out.println(z);
                 Zombie finalZ = z;
                 if (z != null) {
-                    System.out.println("create");
+                    //System.out.println("create");
                     zombies2[positions[i]].add(z);
                     SwingUtilities.invokeLater(()->{
                         bgpane.add(finalZ);

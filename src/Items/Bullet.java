@@ -32,6 +32,7 @@ public class Bullet extends JButton {
     public void setDamage(int newDamage) { damage = newDamage; }
     public void update()//更新子弹的位置
     {
+        System.out.println(String.valueOf(curX) + " " + String.valueOf(curY));
         curX += velocityX;
         curY += velocityY;
     }

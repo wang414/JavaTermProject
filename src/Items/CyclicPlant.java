@@ -3,12 +3,13 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class CyclicPlant extends Plant implements Attackable{
+public abstract class CyclicPlant extends Plant implements Attackable{
     Timer attackCycle;//攻击的循环线程
     Bullet bullet;//这个植物射出的子弹
     static String bulletPath;//子弹贴图的路径
     boolean getBullet;//决定此次tryAttack要不要生成子弹
-    static final int peashSpeed = 100;//平直弹道子弹的固定速度
+    static int bulletId;
+    static final int peashSpeed = 10;//平直弹道子弹的固定速度
     public CyclicPlant(int init_hp, int init_speed, int init_atk,
                        double atk_speed, int x_, int y_, int number)
     {
@@ -34,7 +35,7 @@ public class CyclicPlant extends Plant implements Attackable{
         //对僵尸尝试进行攻击
         Bullet res = null;
 
-        for(int i = 0;i < zombies.size();i++)//对于每一个僵尸
+        for(int i = 0;i < 100 /*zombies.size()*/;i++)//对于每一个僵尸
         {
             if(canAttack(zombies.get(i)))//如果能够打到
             {

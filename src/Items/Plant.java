@@ -26,7 +26,7 @@ public abstract class Plant extends Creature{
      * @param zombies array of arraylist matches to the alive zombies
      * @return
      */
-    public Bullet tryAttack(CopyOnWriteArrayList<Zombie> zombies)   {return null;};
+    public Bullet tryAttack(CopyOnWriteArrayList<Zombie> zombies)   {return null;}
 
 
     /**

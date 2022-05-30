@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public final class Basic_zombie extends Zombie {
 	static{
 		img = new ImageIcon("out/production/PVZ/img/Zombie0.gif");
+		zombieEat = new ImageIcon("out/production/PVZ/img/ZombieEat.gif");
 	}
 	public Basic_zombie(int init_hp, int init_speed, int init_atk,
 						double atk_speed, int x_, int y_, int number)

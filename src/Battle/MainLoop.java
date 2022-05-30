@@ -10,6 +10,7 @@ import java.text.AttributedCharacterIterator;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.lang.Thread.sleep;
 
@@ -29,7 +30,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     CopyOnWriteArrayList<Zombie> []zombies = new CopyOnWriteArrayList[5];
 
     CopyOnWriteArrayList<Plant> []plants = new CopyOnWriteArrayList[5];
-    CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
+    CopyOnWriteArrayList<Bullet> []bullets = new CopyOnWriteArrayList[5];
     CopyOnWriteArrayList<SunLight> sunLights = new CopyOnWriteArrayList<>();
     CopyOnWriteArrayList<Integer> chosenPlants = new CopyOnWriteArrayList<Integer>();
     int sunLightValue = 100;
@@ -52,7 +53,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
     }
 
-
+    final AtomicBoolean gameover = new AtomicBoolean(false);
     /**
      * 用于测试
      * @param args
@@ -74,10 +75,13 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         //初始化
         window = windows;
         //Init();
-        for(int i = 0; i < 5; ++i)
+        for(int i = 0; i < 5; ++i) {
             zombies[i] = new CopyOnWriteArrayList<>();
-        for(int i = 0; i < 5; ++i)
             plants[i] = new CopyOnWriteArrayList<>();
+            bullets[i] = new CopyOnWriteArrayList<>();
+        }
+
+
 
         window.dispose();
 
@@ -95,10 +99,17 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         battlePane.moveToBack(bgLabel);
         window.repaint();
 
+        SeedBank seedbank = new SeedBank();
+        seedbank.init();
+        SwingUtilities.invokeLater(()-> {
+            battlePane.add(seedbank);
+            battlePane.moveToFront(seedbank);
+        });
 
         battlePane.setPosition(bgLabel, -1);
-
-        new Level(curLevel, zombies, battlePane, chosenPlants);
+        Level level = new Level(curLevel, zombies, battlePane, chosenPlants);
+        Thread t = level.getThread();
+        t.start();
         //battlePane.add(new JButton(Basic_zombie.img));
         createSun = new Timer(5000, (l)->generateSun());
         createSun.start();
@@ -113,13 +124,23 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
         //交互内容:
         //植物,铲子的拖动,暂停,阳光拾取
-        int i = 10;
-        while(i > 9) {
-            ;
+        synchronized (gameover) {
+            while (gameover.get()==false) {
+                try {
+                    wait();
+                } catch (Exception ignored) {
+                }
+            }
+            //window.dispose();
+            System.out.println("you are dead");
+            System.out.flush();
         }
+
         //结束
         advanceAll.stop();
         createSun.stop();
+        t.stop();
+        //System.exit(0);
         //返回到下一关界面
     }
 
@@ -156,20 +177,40 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     private void compute()
     {
         //植物的行为:尝试对每一个僵尸发起攻击
-//        for(int i = 0;i < 5; ++i)
-//            for(Plant plant : plants[i]){
-//                Bullet tempBullet = plant.tryAttack(zombies[i]);
-//                if(tempBullet != null) { bullets.add(tempBullet); }
-//            }
+        for(int i = 0;i < 5; ++i) {
+            for (Plant plant : plants[i]) {
+                Bullet tempBullet = plant.tryAttack(zombies[i]);
+                if (tempBullet != null) {
+                    System.out.println("Bullet Created!");
+                    bullets[i].add(tempBullet);
+                    battlePane.add(tempBullet);
+                    battlePane.moveToFront(tempBullet);
+                }
+            }
+        }
+
         for(int i = 0; i < 5; ++i) {
             for (Zombie zombie : zombies[i]) {
                 if (zombie == null) {
                     System.out.println("Dead Zombie!");
                 }
                 zombie.advance();
+                if (zombie.isArriveHouse())
+                {
+                    System.out.println("arrive at house");
+                    gameover.set(true);
+                }
                 //zombie.tryAttack(plants[i]);
             }
         }
+
+        for (int i = 0; i < 5; i++) {
+            for (Bullet bullet : bullets[i]) {
+                System.out.println("Bullet Update!");
+                bullet.update();
+            }
+        }
+
         long presentTime = new Date().getTime();
         long delay = 10000; //automatically disposed after 10000ms
         for (SunLight sunLight : sunLights) {
@@ -341,6 +382,47 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    /**
+     * 用非顶层容器JPanel实现，需将JButton的初始化参数改成对应的图片数据，需调整size
+     * 初始化需要调用init()方法
+     */
+    class SeedBank extends JPanel
+    {
+        JButton[] Plants = new JButton[10];
+
+        public void init()
+        {
+            this.setSize(700, 120);
+            this.setLocation(140, 0);
+            //this.setBackground(Color.BLUE);
+
+            for (int i = 0; i < 10; ++i)
+                Plants[i] = new JButton("Plants" + i);
+
+            JPanel pnl = new JPanel();
+            pnl.setSize(665, 100);
+            pnl.setLocation(200, 10);
+            pnl.setLayout(null);
+
+            int num = 1;
+            for (JButton btn : Plants)
+            {
+                btn.setSize(60, 90);
+                btn.setLocation(60 * (num++), 5);
+                pnl.add(btn);
+                btn.setBorder(null);//除去边框
+                btn.setFocusPainted(false);//除去焦点的框
+                btn.setContentAreaFilled(false);//除去默认的背景填充
+            }
+
+            this.setLayout(null);
+            this.add(pnl);
+
+            this.setVisible(true);
+
+        }
     }
 }
 
