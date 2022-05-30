@@ -58,7 +58,8 @@ public class MainLoop implements MouseListener, MouseMotionListener{
      * 用于测试
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         JFrame jFrame = new JFrame("植物大战僵尸战斗模块测试");
         jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jFrame.setSize(1200,900);
@@ -427,32 +428,4 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 }
 
 
-/**
- * 用非顶层容器JPanel实现，需将JButton的初始化参数改成对应的图片数据，需调整size
- * 初始化需要调用init()方法
- */
-class SeedBank extends JPanel
-{
-    JButton Plant1 = new JButton("Plant1"); // 后期text应当改成以Plant1图片的构造
-    JButton Plant2 = new JButton("Plant2"); // 后期text应当改成以Plant2图片的构造
-    JButton Plant3 = new JButton("Plant3"); // 后期text应当改成以Plant3图片的构造
-    JButton Plant4 = new JButton("Plant4"); // 后期text应当改成以Plant4图片的构造
-    JButton Plant5 = new JButton("Plant5"); // 后期text应当改成以Plant5图片的构造
-    JButton Plant6 = new JButton("Plant6"); // 后期text应当改成以Plant6图片的构造
-    JButton Plant7 = new JButton("Plant7"); // 后期text应当改成以Plant7图片的构造
-    JButton Plant8 = new JButton("Plant8"); // 后期text应当改成以Plant8图片的构造
-    JButton Plant9 = new JButton("Plant9"); // 后期text应当改成以Plant9图片的构造
-    JButton Plant10 = new JButton("Plant10"); // 后期text应当改成以Plant10图片的构造
 
-    public void init()
-    {
-        this.setLayout(new GridLayout());
-        this.add(Plant1);   this.add(Plant2);
-        this.add(Plant3);   this.add(Plant4);
-        this.add(Plant5);   this.add(Plant6);
-        this.add(Plant7);   this.add(Plant8);
-        this.add(Plant9);   this.add(Plant10);
-
-        this.setSize(100, 200);
-    }
-}
