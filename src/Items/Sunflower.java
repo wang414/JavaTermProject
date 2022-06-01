@@ -3,14 +3,15 @@ package Items;
 import javax.swing.*;
 
 public final class Sunflower extends Plant {
-	static String picPath = "";
+	static String picPath = "src/img/SunFlower.gif";
+	static ImageIcon img;
 	static{
 		img = new ImageIcon(picPath);
 	}
-	Sunflower(int init_hp, int init_speed, int init_atk,
-			  double atk_speed, int x_, int y_, int number)
+	public Sunflower(int init_hp, int x_, int y_, int number)
 	{
-		super(init_hp, init_speed, init_atk, atk_speed, x_, y_, number);
+		super(init_hp, 0, 0, 0, x_, y_, number);
+		setIcon(img);
 	}
 
 }

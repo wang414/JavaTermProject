@@ -12,8 +12,6 @@ public final class Basic_zombie extends Zombie {
 						double atk_speed, int x_, int y_, int number)
 	{
 		super(init_hp, init_speed, init_atk, atk_speed, x_, y_, number);
-
-		//System.out.println(img);
 		setIcon(img);
 	}
 

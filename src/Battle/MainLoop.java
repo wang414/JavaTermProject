@@ -3,10 +3,7 @@ import Items.*;
 
 import javax.swing.*;
 import javax.swing.Timer;
-import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.ImageObserver;
-import java.text.AttributedCharacterIterator;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.Random;
@@ -22,7 +19,7 @@ import static java.lang.Thread.sleep;
  */
 
 
-public class MainLoop implements MouseListener, MouseMotionListener{
+public class MainLoop implements MouseListener{
 
     JFrame window;
     int curLevel = 0;
@@ -87,7 +84,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         window.dispose();
 
 
-        // window.addMouseListener(this);
+        window.addMouseListener(this);
         battlePane = new JLayeredPane();
         window.setContentPane(battlePane);
         window.setLayout(null);
@@ -164,7 +161,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         Random rd = new Random();
         int X = rd.nextInt(100, window.getWidth() - 100);
         int ty = rd.nextInt( 100, window.getHeight() - 100);
-        SunLight sunLight = new SunLight(25, 5, X, 0, X, ty);
+        SunLight sunLight = new SunLight(25, 5, X, -100, X, ty);
         sunLight.addActionListener((l)->{
             sunLightValue += 25;
             sunLights.remove(sunLight);
@@ -208,9 +205,10 @@ public class MainLoop implements MouseListener, MouseMotionListener{
                     System.out.println("arrive at house");
                     gameover.set(true);
                 }
-                //zombie.tryAttack(plants[i]);
             }
         }
+
+
 
         for (int i = 0; i < 5; i++) {
             for (Bullet bullet : bullets[i]) {
@@ -349,25 +347,27 @@ public class MainLoop implements MouseListener, MouseMotionListener{
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-
-    }
-
-    @Override
     public void mouseClicked(MouseEvent e) //判断坐标
     {
-        if(e.getX() > 10 && e.getY() > 50)//是否在可种植区域内
+        //System.out.println("clicking");
+        if(e.getY() > 120 && e.getX() > 40)//是否在可种植区域内
         {
             if(curPlant != null)
             {
-                curPlant.setX(e.getX());//调整植物坐标
-                curPlant.setY(e.getY());
-                plants[e.getY() / (900 / 5)].add(curPlant);//种进去
+                System.out.println("print");
+                curPlant.setX(((e.getX() - 40) / 120) * 120 + 60);
+                curPlant.setY(((e.getY() - 120) / 150) * 150 + 150);
+                curPlant.setSize(96,96);
+                plants[(e.getY() - 120) / ((900 - 120) / 5)].add(curPlant);//加入后台植物清单
+                //System.out.println(e.getY() / (900 / 5));
+                //JButton tmpPlant = new JButton(curPlant.getIcon());//准备绘制
+                final Plant tmpPlant = curPlant;
+                SwingUtilities.invokeLater(()->{
+                    battlePane.add(tmpPlant);//将植物塞入战斗图层
+                    battlePane.moveToFront(tmpPlant);
+                    window.repaint();
+                });
+                curPlant = null;
             }
         }
     }
@@ -402,9 +402,16 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
         public void init()
         {
-            this.setSize(700, 120);
-            this.setLocation(140, 0);
-            //this.setBackground(Color.BLUE);
+            image.setSize(656, 128);
+            image.setLocation(0, 0);
+
+            this.setSize(656, 128);
+            this.setLocation(0, 0);
+            /*
+            image.setBorder(null);//除去边框
+            image.setFocusPainted(false);//除去焦点的框
+            image.setContentAreaFilled(false);//除去默认的背景填充
+            */
 
             for (int i = 0; i < 10; ++i)
                 Plants[i] = new JButton("Plants" + i);

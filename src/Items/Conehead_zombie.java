@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class Conehead_zombie extends Zombie {
+	static ImageIcon img;
 	static{
 		img = new ImageIcon("src/img/Conehead.gif");
 	}

@@ -29,6 +29,7 @@ public class SunLight extends JButton {
         targetY = ty;
         generateTime = new Date().getTime();
         setSize(110,110);
+        setLocation(x, y);
 
 
         setBorder(null);//除去边框

@@ -15,6 +15,10 @@ public abstract class Creature extends JButton {
 	public static ImageIcon img;
 	int number;
 
+
+	public boolean isDead(){
+		return  hp <= 0;
+	}
 	/**
 	 * Constructor of abstract class Creature.
 	 * Augments hp, speed, atk, atk_speed, x, y, number are initialized by formal parameters.
@@ -24,7 +28,6 @@ public abstract class Creature extends JButton {
 	Creature(int init_hp, int init_speed, int init_atk,
 			 double init_atk_speed, int x_, int y_, int init_number)
 	{
-		super(img);
 		hp = init_hp;
 		speed = init_speed;
 		atk = init_atk;
@@ -42,6 +45,7 @@ public abstract class Creature extends JButton {
 
 	public void setX(int x) {
 		this.x = x;
+		setLocation(this.x, this.y);
 	}
 	public void setY(int y) {
 		this.y = y;

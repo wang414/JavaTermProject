@@ -22,13 +22,12 @@ public abstract class Zombie extends Creature{
 
     public void advance()
     {
-        //System.out.println(String.valueOf(x)+" "+String.valueOf(y));
+        //System.out.println("present HP is "+String.valueOf(hp));
         if (isEating == false) {
             x -= speed;
             setLocation(x, y);
         }
     }
-
     public boolean isArriveHouse() {
         if (x < -100)
             return true;
