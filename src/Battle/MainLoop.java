@@ -37,7 +37,7 @@ public class MainLoop implements MouseListener{
     JLayeredPane battlePane;
 
     SeedBank seedBank;//植物列表
-    Plant curPlant;//即将种下去的植物
+    Plant curPlant = null;//即将种下去的植物
 
     static ImageIcon bgImageIcon, sentence1, sentence2, sentence3;
 
@@ -457,7 +457,10 @@ public class MainLoop implements MouseListener{
      */
     class SeedBank extends JPanel
     {
-        JButton[] Plants = new JButton[10];
+        static ImageIcon img_seedbank = new ImageIcon("src/img/SeedBank.png");
+
+        JButton[] Plants = new JButton[6];
+        JLabel image = new JLabel(img_seedbank);
 
         public void init()
         {
@@ -472,27 +475,35 @@ public class MainLoop implements MouseListener{
             image.setContentAreaFilled(false);//除去默认的背景填充
             */
 
-            for (int i = 0; i < 10; ++i)
-                Plants[i] = new JButton("Plants" + i);
+            for (int i = 0; i < 6; ++i) {
+                Plants[i] = new JButton();
+                Plants[i].setBorder(null);//除去边框
+                Plants[i].setFocusPainted(false);//除去焦点的框
+                Plants[i].setContentAreaFilled(false);//除去默认的背景填充
 
-            JPanel pnl = new JPanel();
-            pnl.setSize(665, 100);
-            pnl.setLocation(200, 10);
-            pnl.setLayout(null);
-
+            }
+            Plants[0].setIcon(new ImageIcon("src/img/SunFlower0.png"));
+            Plants[1].setIcon(new ImageIcon("src/img/Peashooter0.png"));
+            Plants[0].addActionListener(e -> {
+                curPlant = new Sunflower(100, 0, 20, 1);
+            });
+            Plants[1].addActionListener(e -> {
+                curPlant = new Peashooter(100, 0, 20, 1, 1, 1, 0);
+            });
             int num = 1;
             for (JButton btn : Plants)
             {
-                btn.setSize(60, 90);
-                btn.setLocation(60 * (num++), 5);
-                pnl.add(btn);
-                btn.setBorder(null);//除去边框
-                btn.setFocusPainted(false);//除去焦点的框
-                btn.setContentAreaFilled(false);//除去默认的背景填充
+                btn.setSize(79, 110);
+                btn.setLocation(23 + 90 * (num++), 8);
+                this.add(btn);
+                //btn.setBorder(null);//除去边框
+                //btn.setFocusPainted(false);//除去焦点的框
+                //btn.setContentAreaFilled(false);//除去默认的背景填充
             }
 
             this.setLayout(null);
-            this.add(pnl);
+            this.add(image);
+            //this.add(pnl);
 
             this.setVisible(true);
 

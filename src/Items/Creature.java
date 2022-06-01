@@ -49,6 +49,7 @@ public abstract class Creature extends JButton {
 	}
 	public void setY(int y) {
 		this.y = y;
+		setLocation(this.x, this.y);
 	}
 
 	public void receiveDamage(int damage){
