@@ -18,8 +18,8 @@ public class Level extends Thread{//调用initZombie()即可
     int[] zombies=new int[50];//按出现顺序存储的僵尸序列.zombies[i]表示第i个僵尸的类型,i是其编号
     int sumZombies;//僵尸总数目
     int sumTypeZombies;//僵尸总种类数
-    int [][]typeZombies=new int[10][5];//僵尸基本数据 0 init_hp,1 int init_speed,2 int init_atk,3 double atk_speed,
-
+    int [][]typeZombies=new int[10][5];//僵尸基本数据 0 init_hp,1 int init_speed,2 int init_atk,
+    double []typeZombies2=new double [10];//double atk_speed,
     int[] positions=new int[50];//position[i]表示第i个僵尸应该出现的行,如果不在正常行数内,就随机选取
 
     int[] plants=new int[50];//本关卡可选的植物,plant[i]表示本关卡可选植物的第i个植物的类型
@@ -59,9 +59,10 @@ public class Level extends Thread{//调用initZombie()即可
             //读入每种僵尸的基本特征
             sumTypeZombies= Integer.parseInt(br.readLine());
             for(int i=0;i<sumTypeZombies;i++){
-                for(int j=0;j<4;j++){
+                for(int j=0;j<3;j++){
                     typeZombies[i][j]= Integer.parseInt(br.readLine());
                 }
+                typeZombies2[i]= Double.parseDouble(br.readLine());
             }
 
             //读入植物类型
@@ -199,13 +200,13 @@ public class Level extends Thread{//调用initZombie()即可
         switch (Id)
         {
             case 1:
-                z = new Basic_zombie(1,5,5,5,1200,100 + 150*positionY,1);
+                z = new Basic_zombie(200,5,5,5,1200,100 + 150*positionY,1);
 
                         //Basic_zombie(int init_hp, int init_speed, int init_atk,
                 //				 double atk_speed, int x_, int y_, int number)
                 break;
             case 2:
-                z = new Basic_zombie(1,5,5,5,1200,100 + 150*positionY,1);
+                z = new Basic_zombie(400,5,5,5,1200,100 + 150*positionY,1);
                 //z = new Conehead_zombie(1,1,1,1,1,1,1);
                 break;
         }
