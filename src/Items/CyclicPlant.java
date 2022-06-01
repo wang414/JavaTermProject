@@ -35,14 +35,14 @@ public abstract class CyclicPlant extends Plant implements Attackable{
         //对僵尸尝试进行攻击
         Bullet res = null;
 
-        for(int i = 0;i < 100 /*zombies.size()*/;i++)//对于每一个僵尸
+        for(int i = 0;i < zombies.size();i++)//对于每一个僵尸
         {
-            if(true /*canAttack(zombies.get(i))*/) //如果能够打到
+            if(canAttack(zombies.get(i))) //如果能够打到
             {
                 if(attackCycle.isRunning())//在打了在打了
                 {
                     if(getBullet) {
-                        res = new Bullet(bulletId, atk, x, y, peashSpeed, 0, 10.0, 0.0); //视情况决定是否返回一个新的子弹
+                        res = new Bullet(bulletId, atk, x + 25, y, peashSpeed, 0, 20.0, 0.0); //视情况决定是否返回一个新的子弹
                         getBullet = false;
                     }
                     return res;
@@ -50,7 +50,7 @@ public abstract class CyclicPlant extends Plant implements Attackable{
                 else//没在打
                 {
                     attackCycle.start();//开打!
-                    res = new Bullet(bulletId, atk, x, y, peashSpeed, 0, 10.0, 0.0);;
+                    res = new Bullet(bulletId, atk, x + 25, y, peashSpeed, 0, 20.0, 0.0);;
                     getBullet = false;
                     return res;
                 }

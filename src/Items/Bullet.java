@@ -24,6 +24,7 @@ public class Bullet extends JButton {
     int velocityY;
     double hitRange;//子弹的碰撞判定范围
     double dmgRange;//子弹的伤害溅射范围
+    boolean used; //子弹是否完成攻击
 
     public Bullet(int id, int dmg, int x,int y, int vx, int vy, double hRange, double dRange)
     {
@@ -35,6 +36,7 @@ public class Bullet extends JButton {
         velocityY = vy;
         hitRange = hRange;
         dmgRange = dRange;
+        used = false;
 
         setSize(82, 50);
         setLocation(x, y);
@@ -56,6 +58,19 @@ public class Bullet extends JButton {
         return hitRange >= Math.sqrt(
                         Math.pow((double)curX - (double)targetX, 2.0) +
                         Math.pow((double)curY - (double)targetY, 2.0));
+    }
+
+    public boolean isHit(Zombie zombie) {
+        return zombie.x >= curX && zombie.x <= curX + hitRange;
+    }
+
+    public void hitZombie(Zombie zombie) {
+        zombie.receiveDamage(getDamage());
+        used = true;
+    }
+
+    public boolean isUsed() {
+        return used;
     }
 
     public boolean inRange(int targetX, int targetY)//判定子弹是否造成溅射

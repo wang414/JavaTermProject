@@ -12,8 +12,8 @@ public abstract class Creature extends JButton {
 	long last_atk;
 	int x;
 	int y;
-	public static ImageIcon img;
 	int number;
+
 
 
 	public boolean isDead(){
@@ -49,5 +49,12 @@ public abstract class Creature extends JButton {
 	}
 	public void setY(int y) {
 		this.y = y;
+	}
+
+	public void receiveDamage(int damage){
+		hp -= damage;
+	}
+	public int getDamage() {
+		return atk;
 	}
 }

@@ -6,7 +6,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class Zombie extends Creature{
 	public boolean isEating;
     static ImageIcon zombieDie;
-    static ImageIcon zombieEat;
 
     static {
         zombieDie = new ImageIcon("src/img/ZombieDie.gif");
@@ -18,6 +17,7 @@ public abstract class Zombie extends Creature{
         super(init_hp, init_speed, init_atk, atk_speed, x_, y_, number);
         isEating = false;
         setSize(231,200);
+        setLocation(x - 100, y - 75);
     }
 
     public void advance()
@@ -25,7 +25,7 @@ public abstract class Zombie extends Creature{
         //System.out.println("present HP is "+String.valueOf(hp));
         if (isEating == false) {
             x -= speed;
-            setLocation(x, y);
+            setLocation(x - 100, y - 75);
         }
     }
     public boolean isArriveHouse() {
@@ -33,5 +33,18 @@ public abstract class Zombie extends Creature{
             return true;
         return false;
     }
+
+    public boolean isHitting(Plant plant) {
+        return x >= plant.x + 10 && x <= plant.x  + 30;
+    }
+
+    public void setEating() {
+
+    }
+
+    public void setAdvancing() {
+
+    }
+
     abstract public void tryAttack(CopyOnWriteArrayList<Plant> plants);
 }

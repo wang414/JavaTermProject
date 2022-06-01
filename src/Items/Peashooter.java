@@ -17,5 +17,6 @@ public final class Peashooter extends CyclicPlant implements Attackable{
 	{
 		super(init_hp, init_speed, init_atk, atk_speed, x_, y_, number);
 		setSize(96, 96);
+		setIcon(img);
 	}
 }

@@ -113,10 +113,12 @@ public class MainLoop implements MouseListener{
         createSun.start();
 
         //debug
-        Peashooter tmpShooter = new Peashooter(100, 0, 1, 1, 500, 500, 0);
-        plants[2].add(tmpShooter);
-        battlePane.add(tmpShooter);
-        battlePane.moveToFront(tmpShooter);
+//        for (int i = 0; i < 5; i++) {
+//            Peashooter tmpShooter = new Peashooter(100, 0, 20, 1, 1100, 120 + i * 150, 0);
+//            plants[i].add(tmpShooter);
+//            battlePane.add(tmpShooter);
+//            battlePane.moveToFront(tmpShooter);
+//        }
 
         //判定:Compute
         advanceAll = new Timer(30, (e) -> {
@@ -184,6 +186,8 @@ public class MainLoop implements MouseListener{
         //植物的行为:尝试对每一个僵尸发起攻击
         for(int i = 0;i < 5; ++i) {
             for (Plant plant : plants[i]) {
+
+
                 Bullet tempBullet = plant.tryAttack(zombies[i]);
                 if (tempBullet != null) {
                     //System.out.println("Bullet Created!");
@@ -199,6 +203,27 @@ public class MainLoop implements MouseListener{
                 if (zombie == null) {
                     System.out.println("Dead Zombie!");
                 }
+
+                boolean advance = true;
+                for (Plant plant : plants[i]) {
+                    if (zombie.isHitting(plant)) {
+                        if (!zombie.isEating) {
+                            zombie.setEating();
+                        }
+                        zombie.isEating = true;
+                        advance = false;
+                        plant.receiveDamage(zombie.getDamage());
+                    }
+                }
+
+                if (advance == false) { //被植物挡住不能前进
+                    continue;
+                }
+
+                if (zombie.isEating) {
+                    zombie.setAdvancing();
+                }
+                zombie.isEating = false;
                 zombie.advance();
                 if (zombie.isArriveHouse())
                 {
@@ -214,6 +239,40 @@ public class MainLoop implements MouseListener{
             for (Bullet bullet : bullets[i]) {
                 //System.out.println("Bullet Update!");
                 bullet.update();
+                for (Zombie zombie : zombies[i]) {
+                    if (bullet.isHit(zombie)) {
+                        //bullets[i].remove(bullet);
+                        bullet.hitZombie(zombie);
+                    }
+                }
+            }
+        }
+
+        //处理死去的僵尸
+        for (int i = 0; i < 5; ++i) {
+            for (Zombie zombie : zombies[i]) {
+                if (zombie.isDead()) {
+                    zombies[i].remove(zombie);
+                    battlePane.remove(zombie);
+                }
+            }
+        }
+        //处理用过的植物子弹
+        for (int i = 0; i < 5; ++i) {
+            for (Bullet bullet : bullets[i]) {
+                if (bullet.isUsed()) {
+                    bullets[i].remove(bullet);
+                    battlePane.remove(bullet);
+                }
+            }
+        }
+        //处理死去的植物
+        for (int i = 0; i < 5; ++i) {
+            for (Plant plant : plants[i]) {
+                if (plant.isDead()) {
+                    plants[i].remove(plant);
+                    battlePane.remove(plant);
+                }
             }
         }
 
