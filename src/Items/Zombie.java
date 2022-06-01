@@ -9,7 +9,7 @@ public abstract class Zombie extends Creature{
     static ImageIcon zombieEat;
 
     static {
-        zombieDie = new ImageIcon("out/production/PVZ/img/ZombieDie.gif");
+        zombieDie = new ImageIcon("src/img/ZombieDie.gif");
     }
 
     Zombie(int init_hp, int init_speed, int init_atk,

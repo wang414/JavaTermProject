@@ -5,7 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class Peashooter extends CyclicPlant implements Attackable{
 
-	static String picPath = "out/production/PVZ/img/Peashooter.gif";
+	static String picPath = "src/img/Peashooter.gif";
 	static{
 		img = new ImageIcon(picPath);
 		bulletId = 0;

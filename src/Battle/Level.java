@@ -119,9 +119,11 @@ public class Level extends Thread{//调用initZombie()即可
 
     void initZombie()
     {
+        System.out.println("initZimbie");
         Zombie z;
         for(int i=0;i<sumZombies;i++)
         {
+            System.out.println("initZimbie1");
             if(checkpoint[i]>0){
                 try
                 {

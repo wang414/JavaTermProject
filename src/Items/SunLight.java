@@ -16,7 +16,7 @@ public class SunLight extends JButton {
     int targetX;//阳光停止下落的位置
     int targetY;
     long generateTime;
-    static ImageIcon img = new ImageIcon("out/production/PVZ/img/Sun.gif");
+    static ImageIcon img = new ImageIcon("src/img/Sun.gif");
 
     public SunLight(int value, int spd, int x, int y,int tx,int ty)
     {

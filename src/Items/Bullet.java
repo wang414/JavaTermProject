@@ -11,7 +11,7 @@ import java.awt.*;
 public class Bullet extends JButton {
     static ImageIcon[] img = new ImageIcon[3];
     static {
-        img[0] = new ImageIcon("out/production/PVZ/img/Pea.gif"); //普通豌豆
+        img[0] = new ImageIcon("src/img/Pea.gif"); //普通豌豆
         img[1] = new ImageIcon(""); //冰冻豌豆
         img[2] = new ImageIcon(""); //燃烧豌豆
     }
@@ -46,7 +46,7 @@ public class Bullet extends JButton {
     public void setDamage(int newDamage) { damage = newDamage; }
     public void update()//更新子弹的位置
     {
-        System.out.println(String.valueOf(curX) + " " + String.valueOf(curY));
+        //System.out.println(String.valueOf(curX) + " " + String.valueOf(curY));
         curX += velocityX;
         curY += velocityY;
         setLocation(curX, curY);

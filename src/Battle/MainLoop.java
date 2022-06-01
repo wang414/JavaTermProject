@@ -46,10 +46,10 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
 
     static{
-        bgImageIcon = new ImageIcon("out/production/PVZ/img/Background.jpg");
-        sentence1 = new ImageIcon("out/production/PVZ/img/SentencePrepare.png");
-        sentence2 = new ImageIcon("out/production/PVZ/img/SentenceSet.png");
-        sentence3 = new ImageIcon("out/production/PVZ/img/SentencePlant.png");
+        bgImageIcon = new ImageIcon("src/img/Background.jpg");
+        sentence1 = new ImageIcon("src/img/SentencePrepare.png");
+        sentence2 = new ImageIcon("src/img/SentenceSet.png");
+        sentence3 = new ImageIcon("src/img/SentencePlant.png");
 
     }
 
@@ -189,7 +189,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
             for (Plant plant : plants[i]) {
                 Bullet tempBullet = plant.tryAttack(zombies[i]);
                 if (tempBullet != null) {
-                    System.out.println("Bullet Created!");
+                    //System.out.println("Bullet Created!");
                     bullets[i].add(tempBullet);
                     battlePane.add(tempBullet);
                     battlePane.moveToFront(tempBullet);
@@ -214,7 +214,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
 
         for (int i = 0; i < 5; i++) {
             for (Bullet bullet : bullets[i]) {
-                System.out.println("Bullet Update!");
+                //System.out.println("Bullet Update!");
                 bullet.update();
             }
         }
@@ -251,7 +251,7 @@ public class MainLoop implements MouseListener, MouseMotionListener{
         JLabel[] zombies = new JLabel[5];
         Random r = new Random();
         for (int i = 0; i < 5; i++) {
-            zombies[i] = new JLabel(new ImageIcon("out/production/PVZ/img/Zombie0.gif"));
+            zombies[i] = new JLabel(new ImageIcon("src/img/Zombie0.gif"));
             zombies[i].setLocation(1600 + r.nextInt(300), 100 + r.nextInt(500));
             zombies[i].setSize(231, 200);
             zombies[i].setBackground(null);
