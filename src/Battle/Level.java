@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /** @author yf */
 public class Level extends Thread{//调用initZombie()即可
@@ -35,14 +36,16 @@ public class Level extends Thread{//调用initZombie()即可
 
     CopyOnWriteArrayList<Zombie> []zombies2;
     JLayeredPane bgpane;
+    AtomicInteger gameOver;
     Thread getThread(){
         Thread t=new Thread(this);
         return t;
     }
-    public Level(int level, CopyOnWriteArrayList<Zombie> []zombies2, JLayeredPane bgpane, CopyOnWriteArrayList<Integer> chosenPlants) {
+    public Level(int level, CopyOnWriteArrayList<Zombie> []zombies2, JLayeredPane bgpane, CopyOnWriteArrayList<Integer> chosenPlants, AtomicInteger gameOver) {
         BufferedReader br;
         this.zombies2 = zombies2;
         this.bgpane = bgpane;
+        this.gameOver=gameOver;
         File file = new File("test.txt");
         for(int i=0;i<5;i++){
             zombies2[i]=new CopyOnWriteArrayList<>();
@@ -51,6 +54,7 @@ public class Level extends Thread{//调用initZombie()即可
         {
             br = new BufferedReader(new FileReader(file));
             name = br.readLine();
+            level= Integer.parseInt(name);
             BackgroundPATH = br.readLine();
             //读入图片！！！Image=br.read();
             background_type = Integer.parseInt(br.readLine());
@@ -193,6 +197,7 @@ public class Level extends Thread{//调用initZombie()即可
                 //window.getContentPane().add(finalZ);
             }
         }
+        gameOver.set(1);
     }
 
     public Zombie getZombie(int Id, int positionY)
