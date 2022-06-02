@@ -447,10 +447,11 @@ public class MainLoop implements MouseListener{
                 hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)] = true;
                 curPlant.setX(((e.getX() - 40) / 120) * 120 + 60);
                 curPlant.setY(((e.getY() - 120) / 150) * 150 + 150);
-                curPlant.setSize(96,96);
+                //curPlant.setSize(96,96);
                 plants[(e.getY() - 120) / ((900 - 120) / 5)].add(curPlant);//加入后台植物清单
                 //System.out.println(e.getY() / (900 / 5));
                 //JButton tmpPlant = new JButton(curPlant.getIcon());//准备绘制
+                curPlant.planted();
                 final Plant tmpPlant = curPlant;
                 SwingUtilities.invokeLater(()->{
                     battlePane.add(tmpPlant);//将植物塞入战斗图层

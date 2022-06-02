@@ -17,6 +17,9 @@ public final class Sunflower extends Plant implements ActionListener {
 	{
 		super(init_hp, 0, 0, 0, x_, y_, number);
 		setIcon(img);
+		setSize(96, 96);
+		sunGenerator = new Timer(24000, this);
+		sunGenerator.start();
 	}
 	Timer sunGenerator;
 	static CopyOnWriteArrayList<SunLight> sunLights;

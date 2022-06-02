@@ -61,7 +61,7 @@ public class Bullet extends JButton {
     }
 
     public boolean isHit(Zombie zombie) {
-        return zombie.x >= curX && zombie.x <= curX + hitRange;
+        return zombie.x >= curX - hitRange && zombie.x <= curX + hitRange;
     }
 
     public void hitZombie(Zombie zombie) {

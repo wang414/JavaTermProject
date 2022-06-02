@@ -38,7 +38,18 @@ public abstract class Plant extends Creature{
      */
     public boolean canAttack(Zombie z) {return false;};
 
+    /**
+     * 是否应该进行一次攻击
+     *
+     * @return
+     */
+    public boolean needAttack() {return false;};
 
+    /**
+     * 表示植物已经种下了
+     *
+     */
+    public void planted() {};
 
 
     Plant(int init_hp, int init_speed, int init_atk,
