@@ -11,11 +11,10 @@ public final class Peashooter extends CyclicPlant implements Attackable{
 		img = new ImageIcon(picPath);
 		bulletId = 0;
 	}
-
-	public Peashooter(int init_hp, int init_speed, int init_atk,
-			   double atk_speed, int x_, int y_, int number)
+	static final double atkSpeed = 1.5;
+	public Peashooter(int x_, int y_, int number)
 	{
-		super(init_hp, init_speed, init_atk, atk_speed, x_, y_, number);
+		super(300, 0, 20, atkSpeed, x_, y_, number);
 		setSize(96, 96);
 		setIcon(img);
 	}

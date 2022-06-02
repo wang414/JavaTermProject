@@ -5,9 +5,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 //author: zqh
-public class SunLight extends JButton {
+public class SunLight extends JButton{
     public final int sunValue;//阳光提供的阳光值
 
     int speed;//阳光的下落速度 像素/秒
@@ -17,6 +18,8 @@ public class SunLight extends JButton {
     int targetY;
     long generateTime;
     static ImageIcon img = new ImageIcon("src/img/Sun.gif");
+
+
 
     public SunLight(int value, int spd, int x, int y,int tx,int ty)
     {
@@ -50,4 +53,5 @@ public class SunLight extends JButton {
     public long getGenerateTime(){
         return generateTime;
     }
+
 }

@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Thread.sleep;
 
@@ -30,7 +31,8 @@ public class MainLoop implements MouseListener{
     CopyOnWriteArrayList<Bullet> []bullets = new CopyOnWriteArrayList[5];
     CopyOnWriteArrayList<SunLight> sunLights = new CopyOnWriteArrayList<>();
     CopyOnWriteArrayList<Integer> chosenPlants = new CopyOnWriteArrayList<Integer>();
-    int sunLightValue = 100;
+    boolean[][] hasPlanted = new boolean[5][9];
+    AtomicInteger sunLightValue = new AtomicInteger(100);
     Timer createZombies;
     Timer createSun;
     Timer advanceAll;
@@ -50,7 +52,7 @@ public class MainLoop implements MouseListener{
 
     }
 
-    final AtomicBoolean gameover = new AtomicBoolean(false);
+    final AtomicInteger gameOver = new AtomicInteger(0);
     /**
      * 用于测试
      * @param args
@@ -96,7 +98,17 @@ public class MainLoop implements MouseListener{
         battlePane.add(bgLabel);
         battlePane.moveToBack(bgLabel);
         window.repaint();
+        Sunflower.setBattlePanel(battlePane);
+        Sunflower.setSunLights(sunLights);
+        Sunflower.setSunLightvalue(sunLightValue);
 
+        for(int i = 0;i < 5;i++)
+        {
+            for(int j = 0;j < 9;j++)
+            {
+                hasPlanted[i][j] = false;
+            }
+        }
         SeedBank seedbank = new SeedBank();
         seedbank.init();
         SwingUtilities.invokeLater(()-> {
@@ -105,7 +117,7 @@ public class MainLoop implements MouseListener{
         });
 
         battlePane.setPosition(bgLabel, -1);
-        Level level = new Level(curLevel, zombies, battlePane, chosenPlants);
+        Level level = new Level(curLevel, zombies, battlePane, chosenPlants, gameOver);
         Thread t = level.getThread();
         t.start();
         //battlePane.add(new JButton(Basic_zombie.img));
@@ -131,8 +143,8 @@ public class MainLoop implements MouseListener{
 
         //交互内容:
         //植物,铲子的拖动,暂停,阳光拾取
-        synchronized (gameover) {
-            while (gameover.get()==false) {
+        synchronized (gameOver) {
+            while (!(gameOver.get()==-1 || (gameOver.get()==1 && isZombieEmpty() == true))) {
                 try {
                     wait();
                 } catch (Exception ignored) {
@@ -151,6 +163,17 @@ public class MainLoop implements MouseListener{
         //返回到下一关界面
     }
 
+    private boolean isZombieEmpty() {
+        boolean flg = true;
+        for (int i = 0 ; i < 5; ++i){
+            if (zombies[i].size() != 0){
+                flg = false;
+                break;
+            }
+        }
+        return flg;
+    }
+
     //渲染阶段:
     //算时间差, 开始渲染: 清空画布,从头开始画,遍历所有items:
     //地图,植物,僵尸,阳光,小车,选择栏,铲子,暂停,进度条,光标
@@ -165,7 +188,7 @@ public class MainLoop implements MouseListener{
         int ty = rd.nextInt( 100, window.getHeight() - 100);
         SunLight sunLight = new SunLight(25, 5, X, -100, X, ty);
         sunLight.addActionListener((l)->{
-            sunLightValue += 25;
+            sunLightValue.addAndGet(25);
             sunLights.remove(sunLight);
             SwingUtilities.invokeLater(()->{
                 window.remove(sunLight);
@@ -186,7 +209,14 @@ public class MainLoop implements MouseListener{
         //植物的行为:尝试对每一个僵尸发起攻击
         for(int i = 0;i < 5; ++i) {
             for (Plant plant : plants[i]) {
-
+                if (plant.needAttack()) {
+                    //需要进行一次攻击
+                    for (int j = 0; j < 5; j++) {
+                        for (Zombie zombie : zombies[j]) {
+                            plant.canAttack(zombie);
+                        }
+                    }
+                }
 
                 Bullet tempBullet = plant.tryAttack(zombies[i]);
                 if (tempBullet != null) {
@@ -228,7 +258,7 @@ public class MainLoop implements MouseListener{
                 if (zombie.isArriveHouse())
                 {
                     System.out.println("arrive at house");
-                    gameover.set(true);
+                    gameOver.set(-1);
                 }
             }
         }
@@ -411,9 +441,10 @@ public class MainLoop implements MouseListener{
         //System.out.println("clicking");
         if(e.getY() > 120 && e.getX() > 40)//是否在可种植区域内
         {
-            if(curPlant != null)
+            if(curPlant != null && !hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)])
             {
                 System.out.println("print");
+                hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)] = true;
                 curPlant.setX(((e.getX() - 40) / 120) * 120 + 60);
                 curPlant.setY(((e.getY() - 120) / 150) * 150 + 150);
                 curPlant.setSize(96,96);

@@ -15,7 +15,7 @@ public abstract class CyclicPlant extends Plant implements Attackable{
     {
         super(init_hp, init_speed, init_atk, atk_speed, x_, y_, number);
         getBullet = true;
-        attackCycle = new Timer((int) ((double) 1000 / atk_speed), (ActionEvent e)->
+        attackCycle = new Timer((int) ((double) 1000 * atk_speed), (ActionEvent e)->
         {//周期性地改动getBullet即可
            getBullet = true;
         });
