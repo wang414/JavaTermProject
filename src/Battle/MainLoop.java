@@ -516,11 +516,15 @@ public class MainLoop implements MouseListener{
             }
             Plants[0].setIcon(new ImageIcon("src/img/SunFlower0.png"));
             Plants[1].setIcon(new ImageIcon("src/img/Peashooter0.png"));
+            Plants[2].setIcon(new ImageIcon("src/img/CherryBomb0.png"));
             Plants[0].addActionListener(e -> {
-                curPlant = new Sunflower(100, 0, 20, 1);
+                curPlant = new Sunflower(0, 20, 1);
             });
             Plants[1].addActionListener(e -> {
-                curPlant = new Peashooter(100, 0, 20, 1, 1, 1, 0);
+                curPlant = new Peashooter(1, 1, 0);
+            });
+            Plants[2].addActionListener(e -> {
+                curPlant = new CherryBomb(1, 1, 0);
             });
             int num = 1;
             for (JButton btn : Plants)

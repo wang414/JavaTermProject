@@ -9,6 +9,7 @@ public class Menu extends JPanel {
     static boolean firstClicked=true;
     private Image menuBackgroundImg;// 背景图图片
     private javax.swing.JPanel menuPanel;
+    JButton startGame;
     public Menu(int id) {// Menu初始化
         // initComponents();
         // JPanel初始化
@@ -32,6 +33,14 @@ public class Menu extends JPanel {
         // 采用分组布局
         // 这个代码来自GitHub，完全看不懂，区域判定也是寄的，最终效果是鼠标点击任意位置都执行……
         // 5.30还是修不出来，红豆泥私密马赛
+        startGame = new JButton();
+        startGame.setLocation(700, 100);//设置按钮位置
+        startGame.setSize(250, 100);//设置按钮尺寸
+        startGame.setIcon(new ImageIcon("src/img/AdventureEntrance.png"));//给按钮上贴图
+        startGame.addActionListener(e -> {
+            //在这里执行关卡调用
+        });
+        this.add(startGame);//把按钮加在这个面板上
         javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
         menuPanel.setLayout(menuPanelLayout);
         menuPanelLayout.setHorizontalGroup(

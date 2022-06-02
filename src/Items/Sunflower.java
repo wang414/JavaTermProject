@@ -13,9 +13,9 @@ public final class Sunflower extends Plant implements ActionListener {
 	static{
 		img = new ImageIcon(picPath);
 	}
-	public Sunflower(int init_hp, int x_, int y_, int number)
+	public Sunflower(int x_, int y_, int number)
 	{
-		super(init_hp, 0, 0, 0, x_, y_, number);
+		super(300, 0, 0, 0, x_, y_, number);
 		setIcon(img);
 		setSize(96, 96);
 		sunGenerator = new Timer(24000, this);
