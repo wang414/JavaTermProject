@@ -302,6 +302,7 @@ public class MainLoop implements MouseListener{
                 if (plant.isDead()) {
                     plants[i].remove(plant);
                     battlePane.remove(plant);
+                    hasPlanted[((plant.getY() - 120) / 150)][((plant.getX() - 40) / 120)] = false;
                 }
             }
         }
