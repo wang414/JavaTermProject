@@ -3,6 +3,7 @@ import Items.*;
 
 import javax.swing.*;
 import javax.swing.Timer;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,13 +33,13 @@ public class MainLoop implements MouseListener{
     CopyOnWriteArrayList<SunLight> sunLights = new CopyOnWriteArrayList<>();
     CopyOnWriteArrayList<Integer> chosenPlants = new CopyOnWriteArrayList<Integer>();
     boolean[][] hasPlanted = new boolean[5][9];
-    AtomicInteger sunLightValue = new AtomicInteger(100);
+    AtomicInteger sunLightValue = new AtomicInteger(5000);
     Timer createZombies;
     Timer createSun;
     Timer advanceAll;
     JLayeredPane battlePane;
 
-    SeedBank seedBank;//植物列表
+    SeedBank seedBank = new SeedBank();//植物列表
     Plant curPlant = null;//即将种下去的植物
 
     static ImageIcon bgImageIcon, sentence1, sentence2, sentence3;
@@ -74,7 +75,7 @@ public class MainLoop implements MouseListener{
          */
         //初始化
         window = windows;
-        //Init();
+        Init();
         for(int i = 0; i < 5; ++i) {
             zombies[i] = new CopyOnWriteArrayList<>();
             plants[i] = new CopyOnWriteArrayList<>();
@@ -109,11 +110,11 @@ public class MainLoop implements MouseListener{
                 hasPlanted[i][j] = false;
             }
         }
-        SeedBank seedbank = new SeedBank();
-        seedbank.init();
+        seedBank = new SeedBank();
+        seedBank.init();
         SwingUtilities.invokeLater(()-> {
-            battlePane.add(seedbank);
-            battlePane.moveToFront(seedbank);
+            battlePane.add(seedBank);
+            battlePane.moveToFront(seedBank);
         });
 
         battlePane.setPosition(bgLabel, -1);
@@ -151,7 +152,10 @@ public class MainLoop implements MouseListener{
                 }
             }
             //window.dispose();
-            System.out.println("you are dead");
+            if (gameOver.get() == -1)
+                System.out.println("you are dead");
+            else
+                System.out.println("you win");
             System.out.flush();
         }
 
@@ -159,6 +163,7 @@ public class MainLoop implements MouseListener{
         advanceAll.stop();
         createSun.stop();
         t.stop();
+        windows.dispose();
         //System.exit(0);
         //返回到下一关界面
     }
@@ -315,6 +320,7 @@ public class MainLoop implements MouseListener{
                 window.getContentPane().remove(sunLight);
         }
         sunLights.removeIf(sunLight -> presentTime > delay + sunLight.getGenerateTime());
+        seedBank.sunValueText.setText(sunLightValue.toString());
 
     }
 
@@ -444,25 +450,33 @@ public class MainLoop implements MouseListener{
         {
             if(curPlant != null && !hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)])
             {
-                System.out.println("print");
-                hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)] = true;
-                curPlant.setX(((e.getX() - 40) / 120) * 120 + 60);
-                curPlant.setY(((e.getY() - 120) / 150) * 150 + 150);
-                //curPlant.setSize(96,96);
-                plants[(e.getY() - 120) / ((900 - 120) / 5)].add(curPlant);//加入后台植物清单
-                //System.out.println(e.getY() / (900 / 5));
-                //JButton tmpPlant = new JButton(curPlant.getIcon());//准备绘制
-                curPlant.planted();
-                final Plant tmpPlant = curPlant;
-                SwingUtilities.invokeLater(()->{
-                    battlePane.add(tmpPlant);//将植物塞入战斗图层
-                    battlePane.moveToFront(tmpPlant);
-                    window.repaint();
-                });
-                curPlant = null;
+                if(sunLightValue.get() >= curPlant.getCost())
+                {
+
+                    System.out.println("plant");
+                    curCard.setBlack();
+                    sunLightValue.getAndAdd(-curPlant.getCost());
+                    hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)] = true;
+                    curPlant.setX(((e.getX() - 40) / 120) * 120 + 60);
+                    curPlant.setY(((e.getY() - 120) / 150) * 150 + 150);
+                    //curPlant.setSize(96,96);
+                    plants[(e.getY() - 120) / ((900 - 120) / 5)].add(curPlant);//加入后台植物清单
+                    //System.out.println(e.getY() / (900 / 5));
+                    //JButton tmpPlant = new JButton(curPlant.getIcon());//准备绘制
+                    curPlant.planted();
+                    final Plant tmpPlant = curPlant;
+                    SwingUtilities.invokeLater(()->{
+                        battlePane.add(tmpPlant);//将植物塞入战斗图层
+                        battlePane.moveToFront(tmpPlant);
+                        window.repaint();
+                    });
+                    curPlant = null;
+                }
             }
         }
     }
+
+    Card curCard;
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -492,7 +506,8 @@ public class MainLoop implements MouseListener{
     {
         static ImageIcon img_seedbank = new ImageIcon("src/img/SeedBank.png");
 
-        JButton[] Plants = new JButton[6];
+        Card[] Plants = new Card[6];
+        JButton sunValueText = new JButton(sunLightValue.toString());
         JLabel image = new JLabel(img_seedbank);
 
         public void init()
@@ -508,24 +523,74 @@ public class MainLoop implements MouseListener{
             image.setContentAreaFilled(false);//除去默认的背景填充
             */
 
+            sunValueText.setLocation(25, 90);
+            sunValueText.setSize(60, 30);
+            sunValueText.setFont(new Font("微软雅黑", Font.BOLD, 18));
+            sunValueText.setContentAreaFilled(false);
+            sunValueText.setBorder(null);
+
+            this.add(sunValueText);
             for (int i = 0; i < 6; ++i) {
-                Plants[i] = new JButton();
+                Plants[i] = new Card();
                 Plants[i].setBorder(null);//除去边框
                 Plants[i].setFocusPainted(false);//除去焦点的框
                 Plants[i].setContentAreaFilled(false);//除去默认的背景填充
 
             }
-            Plants[0].setIcon(new ImageIcon("src/img/SunFlower0.png"));
-            Plants[1].setIcon(new ImageIcon("src/img/Peashooter0.png"));
-            Plants[2].setIcon(new ImageIcon("src/img/CherryBomb0.png"));
+            Plants[0].setImg0(new ImageIcon("src/img/SunFlower0.png"));
+            Plants[1].setImg0(new ImageIcon("src/img/Peashooter0.png"));
+            Plants[2].setImg0(new ImageIcon("src/img/CherryBomb0.png"));
+            Plants[3].setImg0(new ImageIcon("src/img/WallNut0.png"));
+            Plants[4].setImg0(new ImageIcon("src/img/Repeater0.png"));
+            Plants[5].setImg0(new ImageIcon("src/img/Shroom0.png"));
+            Plants[0].setImg2(new ImageIcon("src/img/SunFlower2.png"));
+            Plants[1].setImg2(new ImageIcon("src/img/Peashooter2.png"));
+            Plants[2].setImg2(new ImageIcon("src/img/CherryBomb2.png"));
+            Plants[3].setImg2(new ImageIcon("src/img/WallNut2.png"));
+            Plants[4].setImg2(new ImageIcon("src/img/Repeater2.png"));
+            Plants[5].setImg2(new ImageIcon("src/img/Shroom2.png"));
+            for (int i = 0; i < 6; ++i){
+                Plants[i].useImg0();
+            }
+
+
+
             Plants[0].addActionListener(e -> {
-                curPlant = new Sunflower(0, 20, 1);
+                if (Plants[0].canPlant) {
+                    curPlant = new Sunflower(0, 20, 1);
+                    curCard = Plants[0];
+                }
+
             });
             Plants[1].addActionListener(e -> {
-                curPlant = new Peashooter(1, 1, 0);
+                if (Plants[1].canPlant) {
+                    curPlant = new Peashooter(1, 1, 0);
+                    curCard = Plants[1];
+                }
             });
             Plants[2].addActionListener(e -> {
-                curPlant = new CherryBomb(1, 1, 0);
+                if (Plants[2].canPlant) {
+                    curPlant = new CherryBomb(1, 1, 0);
+                    curCard = Plants[2];
+                }
+            });
+            Plants[3].addActionListener(e -> {
+                if (Plants[3].canPlant) {
+                    curPlant = new WallNut(1, 1, 0);
+                    curCard = Plants[3];
+                }
+            });
+            Plants[4].addActionListener(e -> {
+                if (Plants[4].canPlant) {
+                    curPlant = new Repeater(1, 1, 0);
+                    curCard = Plants[4];
+                }
+            });
+            Plants[5].addActionListener(e -> {
+                if (Plants[5].canPlant) {
+                    curPlant = new Shroom(1, 1, 0);
+                    curCard = Plants[5];
+                }
             });
             int num = 1;
             for (JButton btn : Plants)
@@ -544,6 +609,31 @@ public class MainLoop implements MouseListener{
 
             this.setVisible(true);
 
+        }
+    }
+    static class Card extends JButton{
+        ImageIcon[] img = new ImageIcon[3];
+        int waitingTime = 7500;
+        void setImg0(ImageIcon img){
+            this.img[0] = img;
+        }
+        void setImg2(ImageIcon img){
+            this.img[2] = img;
+        }
+        void useImg0(){
+            SwingUtilities.invokeLater(()->setIcon(img[0]));
+            canPlant = true;
+        }
+        void useImg2(){
+            SwingUtilities.invokeLater(()->setIcon(img[2]));
+            canPlant = false;
+        }
+        Boolean canPlant = true;
+        void setBlack(){
+            useImg2();
+            Timer timer = new Timer(waitingTime, (l)->{useImg0();});
+            timer.setRepeats(false);
+            timer.start();
         }
     }
 }

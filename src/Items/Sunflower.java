@@ -17,6 +17,7 @@ public final class Sunflower extends Plant implements ActionListener {
 	{
 		super(300, 0, 0, 0, x_, y_, number);
 		setIcon(img);
+		setCost(50);
 		setSize(96, 96);
 		sunGenerator = new Timer(24000, this);
 		sunGenerator.start();
@@ -25,6 +26,7 @@ public final class Sunflower extends Plant implements ActionListener {
 	static CopyOnWriteArrayList<SunLight> sunLights;
 	static JLayeredPane battlePanel;
 	static AtomicInteger sunLightvalue;
+	static JPanel seedBank;
 	public static void setSunLights(CopyOnWriteArrayList<SunLight> l){
 		sunLights = l;
 	}
@@ -33,6 +35,9 @@ public final class Sunflower extends Plant implements ActionListener {
 	}
 	public static void setSunLightvalue(AtomicInteger v){
 		sunLightvalue = v;
+	}
+	public static void setSeedBank(JPanel s){
+		seedBank = s;
 	}
 
 	public void actionPerformed(ActionEvent e) {

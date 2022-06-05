@@ -22,7 +22,7 @@ public class MainMenu extends JFrame {
         menu.setLocation(0, 0);
         setSize(1200, 900);// 界面大小：初步定为1200* 900，要修改请在Menu类里也一并修改。
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);// 退出功能：点叉
-        getLayeredPane().add(menu, 0);
+        getContentPane().add(menu, 0);
         menu.repaint();
         setResizable(false);
         setVisible(true);
@@ -38,21 +38,26 @@ public class MainMenu extends JFrame {
     public static void selectGame(){
         // 切换bgm
         menuBgm.stopMusic();
-        menuBgm.playMusic("src/battlebgm_day.wav");
+        menuBgm.playMusic("src/bgm/battlebgm_day.wav");
         // TODO
         System.out.println("请选择关卡：");
-        new MainLoop(startWindow);
+        startWindow.dispose();
+        JFrame tmp = new JFrame();
+        tmp.setSize(1200, 900);
+        tmp.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        new Thread(() -> {new MainLoop(tmp);}).start();
 
     }
     public static void main(String[] args) {
         //初始化: 贴图, 区域判定, 背景音乐
         startWindow=new MainMenu(0);
-        //播放背景音乐
+        //播放背景音乐"sr
         menuBgm = new MusicStuff();
         // 背景音乐的路径，如需要改变请改这里：
-        menuBgm.playMusic("src/menubgm.wav");
+        menuBgm.playMusic("src/bgm/menubgm.wav");
+        System.out.println("To end");
         //调用战斗模块: 正确导入既定关卡
-
+        //System.exit(0);
         //退出功能
     }
 }

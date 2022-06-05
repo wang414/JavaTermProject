@@ -18,6 +18,7 @@ public class CherryBomb extends Plant {
     {
         super(300, 0, 1800, 0, x_, y_, number);
         setIcon(img);
+        setCost(150);
         setSize(133, 96);
         needAttackFlag = false;
     }

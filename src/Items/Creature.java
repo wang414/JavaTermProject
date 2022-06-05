@@ -13,6 +13,7 @@ public abstract class Creature extends JButton {
 	int x;
 	int y;
 	int number;
+	int cost;
 
 
 
@@ -36,11 +37,21 @@ public abstract class Creature extends JButton {
 		x = x_;
 		y = y_;
 		number = init_number;
+		cost = 0;
 
 		setBorder(null);//除去边框
 		setFocusPainted(false);//除去焦点的框
 		setContentAreaFilled(false);//除去默认的背景填充
 		setLocation(x, y);
+	}
+
+	//阳光花费 cost
+	public void setCost(int val) {
+		cost = val;
+	}
+
+	public int getCost() {
+		return cost;
 	}
 
 	public void setX(int x) {
