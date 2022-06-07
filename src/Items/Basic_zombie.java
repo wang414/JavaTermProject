@@ -27,8 +27,5 @@ public final class Basic_zombie extends Zombie {
 		setIcon(img);
 	}
 
-	@Override
-	public void tryAttack(CopyOnWriteArrayList<Plant> plants) {
 
-	}
 }

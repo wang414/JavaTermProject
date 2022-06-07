@@ -36,8 +36,7 @@ public class CherryBomb extends Plant {
 
                 setIcon(boom);
                 setSize(256, 192);
-
-
+                setLocation(this.x - 20, this.y - 20);
                 timer0.start();
             }
         });
@@ -59,4 +58,16 @@ public class CherryBomb extends Plant {
         }
         return false;
     };
+
+    @Override
+    public void setX(int x) {
+        this.x = x;
+        setLocation(this.x - 20, this.y - 20);
+    }
+
+    @Override
+    public void setY(int y) {
+        this.y = y;
+        setLocation(this.x - 20, this.y - 20);
+    }
 }

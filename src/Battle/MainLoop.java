@@ -1,14 +1,15 @@
 package Battle;
+
 import Items.*;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.Date;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.Thread.sleep;
@@ -17,11 +18,10 @@ import static java.lang.Thread.sleep;
  * to paint battles.
  *
  * @author wyx, zqh, mxy
- *
  */
 
 
-public class MainLoop implements MouseListener{
+public class MainLoop implements MouseListener, MouseMotionListener {
 
     JFrame window;
     int curLevel = 0;
@@ -33,7 +33,7 @@ public class MainLoop implements MouseListener{
     CopyOnWriteArrayList<SunLight> sunLights = new CopyOnWriteArrayList<>();
     CopyOnWriteArrayList<Integer> chosenPlants = new CopyOnWriteArrayList<Integer>();
     boolean[][] hasPlanted = new boolean[5][9];
-    AtomicInteger sunLightValue = new AtomicInteger(5000);
+    AtomicInteger sunLightValue = new AtomicInteger(75);
     Timer createZombies;
     Timer createSun;
     Timer advanceAll;
@@ -54,20 +54,7 @@ public class MainLoop implements MouseListener{
     }
 
     final AtomicInteger gameOver = new AtomicInteger(0);
-    /**
-     * 用于测试
-     * @param args
-     */
-    public static void main(String[] args)
-    {
-        JFrame jFrame = new JFrame("植物大战僵尸战斗模块测试");
-        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        jFrame.setSize(1200,900);
-        jFrame.setVisible(true);
-        new MainLoop(jFrame);
-    }
-
-    public MainLoop(JFrame windows){
+    public MainLoop(JFrame windows, int curL) {
         /**
          * should be disposed before calling.
          *
@@ -75,18 +62,18 @@ public class MainLoop implements MouseListener{
          */
         //初始化
         window = windows;
-        Init();
-        for(int i = 0; i < 5; ++i) {
+        curLevel = curL;
+        Init(curLevel);
+        for (int i = 0; i < 5; ++i) {
             zombies[i] = new CopyOnWriteArrayList<>();
             plants[i] = new CopyOnWriteArrayList<>();
             bullets[i] = new CopyOnWriteArrayList<>();
         }
 
 
-
         window.dispose();
 
-
+        window.addMouseMotionListener(this);
         window.addMouseListener(this);
         battlePane = new JLayeredPane();
         window.setContentPane(battlePane);
@@ -103,16 +90,14 @@ public class MainLoop implements MouseListener{
         Sunflower.setSunLights(sunLights);
         Sunflower.setSunLightvalue(sunLightValue);
 
-        for(int i = 0;i < 5;i++)
-        {
-            for(int j = 0;j < 9;j++)
-            {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 9; j++) {
                 hasPlanted[i][j] = false;
             }
         }
         seedBank = new SeedBank();
         seedBank.init();
-        SwingUtilities.invokeLater(()-> {
+        SwingUtilities.invokeLater(() -> {
             battlePane.add(seedBank);
             battlePane.moveToFront(seedBank);
         });
@@ -122,8 +107,9 @@ public class MainLoop implements MouseListener{
         Thread t = level.getThread();
         t.start();
         //battlePane.add(new JButton(Basic_zombie.img));
-        createSun = new Timer(5000, (l)->generateSun());
-        createSun.start();
+        createSun = new Timer(5000, (l) -> generateSun());
+        if (curLevel == 0)
+            createSun.start();
 
         //debug
 //        for (int i = 0; i < 5; i++) {
@@ -145,27 +131,83 @@ public class MainLoop implements MouseListener{
         //交互内容:
         //植物,铲子的拖动,暂停,阳光拾取
         synchronized (gameOver) {
-            while (!(gameOver.get()==-1 || (gameOver.get()==1 && isZombieEmpty() == true))) {
+            while (!(gameOver.get() == -1 || (gameOver.get() == 1 && isZombieEmpty()))) {
                 try {
                     wait();
                 } catch (Exception ignored) {
                 }
             }
-            //window.dispose();
-            if (gameOver.get() == -1)
-                System.out.println("you are dead");
-            else
-                System.out.println("you win");
-            System.out.flush();
         }
+        //window.dispose();
+        for (int i = 0; i < 5; ++i) {
+            for (Plant plant : plants[i]) {
+                plant.receiveDamage(10000);
+            }
+            for (Zombie zombie : zombies[i]) {
+                zombie.receiveDamage(10000);
+            }
+        }
+        compute();
+        t.stop();
+        advanceAll.stop();
+        if (curLevel == 0)
+            createSun.stop();
+        if (gameOver.get() == -1) {
+            System.out.println("you are dead");
+            JLabel dead = new JLabel(new ImageIcon("src/img/Dead.png"));
+            dead.setLocation(0, 0);
+            dead.setSize(1085, 900);
+            SwingUtilities.invokeLater(() -> {
+                battlePane.add(dead);
+                battlePane.moveToFront(dead);
+            });
+            try {
+                sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } else
+            System.out.println("you win");
+        System.out.flush();
+
 
         //结束
-        advanceAll.stop();
-        createSun.stop();
-        t.stop();
+
+
+        if (gameOver.get() == 1) {
+            System.out.println("Win Time！！");
+            JLabel lb = new JLabel(bgImageIcon[2]);
+            lb.setSize(1200, 900);
+            lb.setLocation(0, 0);
+            lb.setVisible(true);
+            battlePane.add(lb);
+            battlePane.moveToFront(lb);
+            //window.add(lb);
+            long preTime = new Date().getTime();
+            while (preTime + 4000 > new Date().getTime())
+                ;
+
+            if (curLevel == 0)
+                new Thread(() -> new MainLoop(windows, 1)).start();
+
+        } else {
+            System.exit(0);
+        }
         windows.dispose();
-        //System.exit(0);
         //返回到下一关界面
+    }
+
+    /**
+     * 用于测试
+     * @param args
+     */
+    public static void main(String[] args)
+    {
+        JFrame jFrame = new JFrame("植物大战僵尸战斗模块测试");
+        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jFrame.setSize(1200,900);
+        jFrame.setVisible(true);
+        new MainLoop(jFrame, 1);
     }
 
     private boolean isZombieEmpty() {
@@ -189,13 +231,13 @@ public class MainLoop implements MouseListener{
     void generateSun(){
         System.out.println("generate sun");
         Random rd = new Random();
-        int X = rd.nextInt(100, window.getWidth() - 100);
-        int ty = rd.nextInt( 100, window.getHeight() - 100);
+        int X = rd.nextInt(200, window.getWidth() - 100);
+        int ty = rd.nextInt(300, window.getHeight() - 100);
         SunLight sunLight = new SunLight(25, 5, X, -100, X, ty);
-        sunLight.addActionListener((l)->{
+        sunLight.addActionListener((l) -> {
             sunLightValue.addAndGet(25);
             sunLights.remove(sunLight);
-            SwingUtilities.invokeLater(()->{
+            SwingUtilities.invokeLater(() -> {
                 window.remove(sunLight);
                 window.repaint();
             });
@@ -260,8 +302,7 @@ public class MainLoop implements MouseListener{
                 }
                 zombie.isEating = false;
                 zombie.advance();
-                if (zombie.isArriveHouse())
-                {
+                if (zombie.isArriveHouse()) {
                     System.out.println("arrive at house");
                     gameOver.set(-1);
                 }
@@ -389,8 +430,8 @@ public class MainLoop implements MouseListener{
             SwingUtilities.invokeLater(()->{
                 if (!bgBacked && bg.getLocation().x < -340) {
                     bg.setLocation(bg.getLocation().x + 5, bg.getLocation().y);
-                    for (int i = 0; i < 5; i++) {
-                        zombies[i].setLocation( zombies[i].getLocation().x + 5, zombies[i].getLocation().y);
+                    for (int i = 0; i < 7; i++) {
+                        zombies[i].setLocation(zombies[i].getLocation().x + 5, zombies[i].getLocation().y);
                     }
                 } else {
                     bgBacked = true;
@@ -465,7 +506,7 @@ public class MainLoop implements MouseListener{
                     //JButton tmpPlant = new JButton(curPlant.getIcon());//准备绘制
                     curPlant.planted();
                     final Plant tmpPlant = curPlant;
-                    SwingUtilities.invokeLater(()->{
+                    SwingUtilities.invokeLater(() -> {
                         battlePane.add(tmpPlant);//将植物塞入战斗图层
                         battlePane.moveToFront(tmpPlant);
                         window.repaint();
@@ -498,12 +539,27 @@ public class MainLoop implements MouseListener{
 
     }
 
+    @Override
+    public void mouseDragged(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (usingShovel) {
+            movingShovel.setLocation(e.getX() - movingShovel.getWidth() / 2, e.getY() - movingShovel.getHeight());
+            movingShovel.setVisible(true);
+            battlePane.moveToFront(movingShovel);
+        } else {
+            movingShovel.setVisible(false);
+        }
+    }
+
     /**
      * 用非顶层容器JPanel实现，需将JButton的初始化参数改成对应的图片数据，需调整size
      * 初始化需要调用init()方法
      */
-    class SeedBank extends JPanel
-    {
+    class SeedBank extends JPanel {
         static ImageIcon img_seedbank = new ImageIcon("src/img/SeedBank.png");
 
         Card[] Plants = new Card[6];
@@ -549,34 +605,42 @@ public class MainLoop implements MouseListener{
             Plants[3].setImg2(new ImageIcon("src/img/WallNut2.png"));
             Plants[4].setImg2(new ImageIcon("src/img/Repeater2.png"));
             Plants[5].setImg2(new ImageIcon("src/img/Shroom2.png"));
-            for (int i = 0; i < 6; ++i){
+
+            if (curLevel == 1) {
+                Plants[0].setImg0(new ImageIcon("src/img/SunShr0.png"));
+                Plants[0].setImg2(new ImageIcon("src/img/SunShr2.png"));
+            }
+
+            for (int i = 0; i < 6; ++i) {
                 Plants[i].useImg0();
             }
 
 
-
             Plants[0].addActionListener(e -> {
                 if (Plants[0].canPlant) {
-                    curPlant = new Sunflower(0, 20, 1);
+                    if (curLevel == 1)
+                        curPlant = new SunShr(1, 1, curLevel);
+                    else
+                        curPlant = new Sunflower(0, 20, curLevel);
                     curCard = Plants[0];
                 }
 
             });
             Plants[1].addActionListener(e -> {
                 if (Plants[1].canPlant) {
-                    curPlant = new Peashooter(1, 1, 0);
+                    curPlant = new Peashooter(1, 1, curLevel);
                     curCard = Plants[1];
                 }
             });
             Plants[2].addActionListener(e -> {
                 if (Plants[2].canPlant) {
-                    curPlant = new CherryBomb(1, 1, 0);
+                    curPlant = new CherryBomb(1, 1, curLevel);
                     curCard = Plants[2];
                 }
             });
             Plants[3].addActionListener(e -> {
                 if (Plants[3].canPlant) {
-                    curPlant = new WallNut(1, 1, 0);
+                    curPlant = new WallNut(1, 1, curLevel);
                     curCard = Plants[3];
                 }
             });

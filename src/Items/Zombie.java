@@ -38,13 +38,9 @@ public abstract class Zombie extends Creature{
         return x >= plant.x + 10 && x <= plant.x  + 30;
     }
 
-    public void setEating() {
+    abstract public void setEating();
 
-    }
+    abstract public void setAdvancing();
 
-    public void setAdvancing() {
 
-    }
-
-    abstract public void tryAttack(CopyOnWriteArrayList<Plant> plants);
 }

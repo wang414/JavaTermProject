@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 //author: zqh
 public class SunLight extends JButton{
-    public final int sunValue;//阳光提供的阳光值
+    public int sunValue;//阳光提供的阳光值
 
     int speed;//阳光的下落速度 像素/秒
     int curX;
@@ -18,12 +18,19 @@ public class SunLight extends JButton{
     int targetY;
     long generateTime;
     static ImageIcon img = new ImageIcon("src/img/Sun.gif");
+    static ImageIcon imgSmall = new ImageIcon("src/img/SmallSun.gif");
+    public void setSmallSunLight(){
+        setIcon(imgSmall);
+        setSize(50,50);
+        sunValue = 15;
+    }
 
 
 
     public SunLight(int value, int spd, int x, int y,int tx,int ty)
     {
         super(img);
+        System.out.println(x+" "+ y);
         sunValue = value;
         speed = spd;
         curX = x;

@@ -19,10 +19,9 @@ public final class Sunflower extends Plant implements ActionListener {
 		setIcon(img);
 		setCost(50);
 		setSize(96, 96);
-		sunGenerator = new Timer(24000, this);
-		sunGenerator.start();
+
 	}
-	Timer sunGenerator;
+	Timer sunGenerator0,sunGenerator1;
 	static CopyOnWriteArrayList<SunLight> sunLights;
 	static JLayeredPane battlePanel;
 	static AtomicInteger sunLightvalue;
@@ -40,7 +39,7 @@ public final class Sunflower extends Plant implements ActionListener {
 		seedBank = s;
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	void generateSun(){
 		System.out.println("should generate sun");
 		final SunLight sunLight = new SunLight(25, 5, x,y,x,y+50);
 		sunLight.addActionListener((l)->{
@@ -56,14 +55,31 @@ public final class Sunflower extends Plant implements ActionListener {
 			battlePanel.moveToFront(sunLight);
 		});
 		sunLights.add(sunLight);
+	}
 
+	public void actionPerformed(ActionEvent e) {
+		generateSun();
+	}
+
+	@Override
+	public void planted() {
+		super.planted();
+		sunGenerator1 = new Timer(24000,this);
+		sunGenerator0 = new Timer(7000, (l)->{
+			generateSun();
+			sunGenerator1.start();
+		});
+		sunGenerator0.setRepeats(false);
+		sunGenerator0.start();
 	}
 
 	@Override
 	public boolean isDead() {
 		boolean flg = super.isDead();
-		if (flg)
-			sunGenerator.stop();
+		if (flg) {
+			sunGenerator0.stop();
+			sunGenerator1.stop();
+		}
 		return flg;
 	}
 }

@@ -4,7 +4,7 @@ import javax.swing.*;
 
 /** @author yby */
 
-public abstract class Creature extends JButton {
+public abstract class Creature extends JLabel {
 	int hp;
 	int speed;
 	int atk;
@@ -40,8 +40,8 @@ public abstract class Creature extends JButton {
 		cost = 0;
 
 		setBorder(null);//除去边框
-		setFocusPainted(false);//除去焦点的框
-		setContentAreaFilled(false);//除去默认的背景填充
+		//setFocusPainted(false);//除去焦点的框
+		//setContentAreaFilled(false);//除去默认的背景填充
 		setLocation(x, y);
 	}
 

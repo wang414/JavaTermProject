@@ -45,7 +45,7 @@ public class MainMenu extends JFrame {
         JFrame tmp = new JFrame();
         tmp.setSize(1200, 900);
         tmp.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        new Thread(() -> {new MainLoop(tmp);}).start();
+        new Thread(() -> {new MainLoop(tmp, 0);}).start();
 
     }
     public static void main(String[] args) {

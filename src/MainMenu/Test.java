@@ -8,6 +8,6 @@ public class Test extends JFrame {
         JFrame jFrame = new Test();
         jFrame.setSize(1200,900);
         jFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        new MainLoop(jFrame);
+        new MainLoop(jFrame, 0);
     }
 }

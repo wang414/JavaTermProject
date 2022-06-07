@@ -207,13 +207,13 @@ public class Level extends Thread{//调用initZombie()即可
         switch (Id)
         {
             case 1:
-                z = new Basic_zombie(200,1,1,5,1200,120 + 150*positionY,1);
+                z = new Basic_zombie(200,1,2,5,1200,120 + 150*positionY,1);
 
                         //Basic_zombie(int init_hp, int init_speed, int init_atk,
                 //				 double atk_speed, int x_, int y_, int number)
                 break;
             case 2:
-                z = new Conehead_zombie(400,1,1,5,1200,120 + 150*positionY,1);
+                z = new Conehead_zombie(400,1,2,5,1200,120 + 150*positionY,1);
                 //z = new Conehead_zombie(1,1,1,1,1,1,1);
                 break;
         }
