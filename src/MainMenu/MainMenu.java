@@ -10,13 +10,8 @@ package MainMenu;
 
 
 import Battle.MainLoop;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.*;
 
 
@@ -57,7 +52,7 @@ public class MainMenu extends JFrame {
 
         // 进入关卡：
         // 6.5 0:10:发现之前窗口变白也是没开线程的问题，可以继续用startWindow。
-        new Thread(() -> {new MainLoop(startWindow);}).start();
+        new Thread(() -> {new MainLoop(startWindow, 0);}).start();
 
     }
     public static void main(String[] args) {
