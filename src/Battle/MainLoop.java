@@ -44,7 +44,7 @@ public class MainLoop implements MouseListener, MouseMotionListener {
     CopyOnWriteArrayList<SunLight> sunLights = new CopyOnWriteArrayList<>();
     CopyOnWriteArrayList<Integer> chosenPlants = new CopyOnWriteArrayList<Integer>();
     boolean[][] hasPlanted = new boolean[5][9];
-    AtomicInteger sunLightValue = new AtomicInteger(75);
+    AtomicInteger sunLightValue = new AtomicInteger(5000);
     Timer createZombies;
     Timer createSun;
     Timer advanceAll;
