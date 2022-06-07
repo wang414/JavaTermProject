@@ -26,10 +26,20 @@ public class MainLoop implements MouseListener, MouseMotionListener {
     JFrame window;
     int curLevel = 0;
 
-    CopyOnWriteArrayList<Zombie> []zombies = new CopyOnWriteArrayList[5];
+    static ImageIcon[] bgImageIcon = new ImageIcon[3];
+    static ImageIcon sentence1, sentence2, sentence3;
 
-    CopyOnWriteArrayList<Plant> []plants = new CopyOnWriteArrayList[5];
-    CopyOnWriteArrayList<Bullet> []bullets = new CopyOnWriteArrayList[5];
+    static {
+        bgImageIcon[0] = new ImageIcon("src/img/Background0.jpg");
+        bgImageIcon[1] = new ImageIcon("src/img/Background1.jpg");
+        bgImageIcon[2] = new ImageIcon("src/img/Win.gif");
+        sentence1 = new ImageIcon("src/img/SentencePrepare.png");
+        sentence2 = new ImageIcon("src/img/SentenceSet.png");
+        sentence3 = new ImageIcon("src/img/SentencePlant.png");
+
+    }
+
+    CopyOnWriteArrayList<Zombie>[] zombies = new CopyOnWriteArrayList[5];
     CopyOnWriteArrayList<SunLight> sunLights = new CopyOnWriteArrayList<>();
     CopyOnWriteArrayList<Integer> chosenPlants = new CopyOnWriteArrayList<Integer>();
     boolean[][] hasPlanted = new boolean[5][9];
@@ -41,17 +51,6 @@ public class MainLoop implements MouseListener, MouseMotionListener {
 
     SeedBank seedBank = new SeedBank();//植物列表
     Plant curPlant = null;//即将种下去的植物
-
-    static ImageIcon bgImageIcon, sentence1, sentence2, sentence3;
-
-
-    static{
-        bgImageIcon = new ImageIcon("src/img/Background.jpg");
-        sentence1 = new ImageIcon("src/img/SentencePrepare.png");
-        sentence2 = new ImageIcon("src/img/SentenceSet.png");
-        sentence3 = new ImageIcon("src/img/SentencePlant.png");
-
-    }
 
     final AtomicInteger gameOver = new AtomicInteger(0);
     public MainLoop(JFrame windows, int curL) {
@@ -79,7 +78,7 @@ public class MainLoop implements MouseListener, MouseMotionListener {
         window.setContentPane(battlePane);
         window.setLayout(null);
         window.setVisible(true);
-        JLabel bgLabel = new JLabel(bgImageIcon);
+        JLabel bgLabel = new JLabel(bgImageIcon[curLevel]);
         bgLabel.setSize(2100, 900);
         //bgLabel.setOpaque(false);
         bgLabel.setLocation(-340, 0);
@@ -89,6 +88,19 @@ public class MainLoop implements MouseListener, MouseMotionListener {
         Sunflower.setBattlePanel(battlePane);
         Sunflower.setSunLights(sunLights);
         Sunflower.setSunLightvalue(sunLightValue);
+        SunShr.setBattlePanel(battlePane);
+        SunShr.setSunLights(sunLights);
+        SunShr.setSunLightvalue(sunLightValue);
+
+        for (int i = 0; i < 5; i++) {
+            cars[i] = new Car(-60, 150 + i * 150);
+        }
+        SwingUtilities.invokeLater(() -> {
+            for (int i = 0; i < 5; i++) {
+                battlePane.add(cars[i]);
+                battlePane.moveToFront(cars[i]);
+            }
+        });
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 9; j++) {
@@ -309,7 +321,17 @@ public class MainLoop implements MouseListener, MouseMotionListener {
             }
         }
 
-
+        for (int i = 0; i < 5; i++) {
+            if (cars[i].isUsed() == false) {
+                cars[i].update();
+                for (Zombie zombie : zombies[i]) {
+                    if (cars[i].isHit(zombie)) {
+                        zombie.receiveDamage(cars[i].getDamage());
+                        cars[i].start();
+                    }
+                }
+            }
+        }
 
         for (int i = 0; i < 5; i++) {
             for (Bullet bullet : bullets[i]) {
@@ -366,7 +388,7 @@ public class MainLoop implements MouseListener, MouseMotionListener {
     }
 
     volatile boolean bgArrived, bgBacked; //背景加载地图时移动判定
-    private void Init() {
+    private void Init(int number) {
         System.out.println("Start init!");
 
         JLayeredPane initPane = new JLayeredPane();
@@ -374,7 +396,7 @@ public class MainLoop implements MouseListener, MouseMotionListener {
         window.setLayout(null);
         window.setVisible(true);
 
-        JLabel bg = new JLabel(bgImageIcon);
+        JLabel bg = new JLabel(bgImageIcon[number]);
         bg.setSize(2100, 900);
         bg.setOpaque(false);
         bg.setLocation(0, 0);
@@ -383,10 +405,14 @@ public class MainLoop implements MouseListener, MouseMotionListener {
 
         //导入关卡信息
         //渲染地图与出没僵尸
-        JLabel[] zombies = new JLabel[5];
+        JLabel[] zombies = new JLabel[7];
         Random r = new Random();
-        for (int i = 0; i < 5; i++) {
-            zombies[i] = new JLabel(new ImageIcon("src/img/Zombie0.gif"));
+        for (int i = 0; i < 7; i++) {
+            if (i < 5) {
+                zombies[i] = new JLabel(new ImageIcon("src/img/Zombie0.gif"));
+            } else {
+                zombies[i] = new JLabel(new ImageIcon("src/img/Conehead.gif"));
+            }
             zombies[i].setLocation(1600 + r.nextInt(300), 100 + r.nextInt(500));
             zombies[i].setSize(231, 200);
             zombies[i].setBackground(null);
@@ -403,8 +429,8 @@ public class MainLoop implements MouseListener, MouseMotionListener {
             SwingUtilities.invokeLater(()->{
                 if (!bgArrived && bg.getLocation().x > -900) {
                     bg.setLocation(bg.getLocation().x - 5, bg.getLocation().y);
-                    for (int i = 0; i < 5; i++) {
-                        zombies[i].setLocation( zombies[i].getLocation().x - 5, zombies[i].getLocation().y);
+                    for (int i = 0; i < 7; i++) {
+                        zombies[i].setLocation(zombies[i].getLocation().x - 5, zombies[i].getLocation().y);
                     }
                 } else {
                     bgArrived = true;
@@ -500,6 +526,7 @@ public class MainLoop implements MouseListener, MouseMotionListener {
                     hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)] = true;
                     curPlant.setX(((e.getX() - 40) / 120) * 120 + 60);
                     curPlant.setY(((e.getY() - 120) / 150) * 150 + 150);
+
                     //curPlant.setSize(96,96);
                     plants[(e.getY() - 120) / ((900 - 120) / 5)].add(curPlant);//加入后台植物清单
                     //System.out.println(e.getY() / (900 / 5));
@@ -646,13 +673,13 @@ public class MainLoop implements MouseListener, MouseMotionListener {
             });
             Plants[4].addActionListener(e -> {
                 if (Plants[4].canPlant) {
-                    curPlant = new Repeater(1, 1, 0);
+                    curPlant = new Repeater(1, 1, curLevel);
                     curCard = Plants[4];
                 }
             });
             Plants[5].addActionListener(e -> {
                 if (Plants[5].canPlant) {
-                    curPlant = new Shroom(1, 1, 0);
+                    curPlant = new Shroom(1, 1, curLevel);
                     curCard = Plants[5];
                 }
             });

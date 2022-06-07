@@ -8,12 +8,13 @@ import java.awt.*;
  * @author zqh, wyx
  */
 
-public class Bullet extends JButton {
-    static ImageIcon[] img = new ImageIcon[3];
+public class Bullet extends JLabel {
+    static ImageIcon[] img = new ImageIcon[4];
     static {
         img[0] = new ImageIcon("src/img/Pea.gif"); //普通豌豆
         img[1] = new ImageIcon(""); //冰冻豌豆
         img[2] = new ImageIcon(""); //燃烧豌豆
+        img[3] = new ImageIcon("src/img/ShroomPea.gif"); //蘑菇子弹
     }
 
     int damage;//子弹会造成的伤害,可以修改(火炬树桩)
@@ -41,8 +42,8 @@ public class Bullet extends JButton {
         setSize(82, 50);
         setLocation(x, y);
         setBorder(null);//除去边框
-        setFocusPainted(false);//除去焦点的框
-        setContentAreaFilled(false);//除去默认的背景填充
+        // setFocusPainted(false);//除去焦点的框
+        // setContentAreaFilled(false);//除去默认的背景填充
     }
     public int getDamage(){ return damage; }//damage的setter和getter
     public void setDamage(int newDamage) { damage = newDamage; }

@@ -9,7 +9,6 @@ public class Repeater extends CyclicPlant implements Attackable {
     static ImageIcon img;
     static{
         img = new ImageIcon(picPath);
-        bulletId = 0;
     }
     static final double atkSpeed = 1.5;
 
@@ -18,6 +17,7 @@ public class Repeater extends CyclicPlant implements Attackable {
     public Repeater(int x_, int y_, int number)
     {
         super(300, 0, 20, atkSpeed, x_, y_, number);
+        bulletId = 0;
         setSize(96, 96);
         setIcon(img);
         setCost(200);

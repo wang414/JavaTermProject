@@ -8,7 +8,7 @@ public abstract class CyclicPlant extends Plant implements Attackable{
     //Bullet bullet;//这个植物射出的子弹
     //static String bulletPath; //子弹贴图的路径，考虑把图片放到子弹里面处理 by mxy
     boolean getBullet;//决定此次tryAttack要不要生成子弹
-    static int bulletId;
+    int bulletId;
     static final int peashSpeed = 10;//平直弹道子弹的固定速度
     public CyclicPlant(int init_hp, int init_speed, int init_atk,
                        double atk_speed, int x_, int y_, int number)
@@ -27,7 +27,7 @@ public abstract class CyclicPlant extends Plant implements Attackable{
     {
         //是否可以进行攻击
         //默认的单行索敌机制: 只对自身所在行且在自身之前的僵尸进行索敌
-        return x < z.x/* && y == z.y*/; //已经保证只会搜索本行的僵尸
+        return x < z.x + 10/* && y == z.y*/; //已经保证只会搜索本行的僵尸
     }
     @Override
     public Bullet tryAttack(CopyOnWriteArrayList<Zombie> zombies)
