@@ -1,6 +1,7 @@
 package Battle;
 
 import Items.*;
+import MainMenu.MainMenu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -236,7 +237,7 @@ public class MainLoop implements MouseListener, MouseMotionListener {
                 ;
 
             if (curLevel == 0)
-                new Thread(() -> new MainLoop(windows, 1)).start();
+                new Thread(() -> MainMenu.selectGame(1)).start();
 
         } else {
             System.exit(0);
