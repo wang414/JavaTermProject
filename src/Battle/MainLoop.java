@@ -51,6 +51,14 @@ public class MainLoop implements MouseListener, MouseMotionListener {
 
     SeedBank seedBank = new SeedBank();//植物列表
     Plant curPlant = null;//即将种下去的植物
+    Car[] cars = new Car[5];
+    CopyOnWriteArrayList<Plant>[] plants = new CopyOnWriteArrayList[5];
+    CopyOnWriteArrayList<Bullet>[] bullets = new CopyOnWriteArrayList[5];
+    boolean usingShovel = false;
+    JLabel shovelBank = new JLabel();
+    JButton shovel = new JButton();
+    ImageIcon shovelIcon = new ImageIcon("src/img/Shovel.png");
+    JLabel movingShovel = new JLabel();
 
     final AtomicInteger gameOver = new AtomicInteger(0);
     public MainLoop(JFrame windows, int curL) {
@@ -113,6 +121,34 @@ public class MainLoop implements MouseListener, MouseMotionListener {
             battlePane.add(seedBank);
             battlePane.moveToFront(seedBank);
         });
+
+        //铲子系统
+        shovelBank.setIcon(new ImageIcon("src/img/ShovelBank.png"));
+        shovel.setIcon(new ImageIcon("src/img/Shovel.png"));
+        shovelBank.setSize(105, 108);
+        shovel.setSize(100, 100);
+        shovelBank.setLocation(656, 0);
+        shovel.setLocation(661, 5);
+        shovel.addActionListener(e -> {
+            usingShovel = true;
+            shovel.setVisible(false);
+            shovel.setEnabled(false);
+        });
+        shovelBank.setVisible(true);
+        shovel.setVisible(true);
+        shovel.setBorder(null);//除去边框
+        shovel.setFocusPainted(false);//除去焦点的框
+        shovel.setContentAreaFilled(false);//除去默认的背景填充
+        battlePane.add(shovelBank);
+        battlePane.add(shovel);
+        battlePane.moveToFront(shovel);
+
+        movingShovel.setSize(100, 100);
+        movingShovel.setLocation(100, 100);
+        movingShovel.setIcon(shovelIcon);
+        movingShovel.setVisible(false);
+        battlePane.add(movingShovel);
+
 
         battlePane.setPosition(bgLabel, -1);
         Level level = new Level(curLevel, zombies, battlePane, chosenPlants, gameOver);
@@ -370,7 +406,9 @@ public class MainLoop implements MouseListener, MouseMotionListener {
                 if (plant.isDead()) {
                     plants[i].remove(plant);
                     battlePane.remove(plant);
-                    hasPlanted[((plant.getY() - 120) / 150)][((plant.getX() - 40) / 120)] = false;
+                    hasPlanted[((plant.getY() + 10 - 120) / 150)][((plant.getX() + 30 - 40) / 120)] = false;
+                    System.out.print(((plant.getY() + 10 - 120) / 150));
+                    System.out.println(((plant.getX() + 10 - 40) / 120));
                 }
             }
         }
@@ -519,7 +557,6 @@ public class MainLoop implements MouseListener, MouseMotionListener {
             {
                 if(sunLightValue.get() >= curPlant.getCost())
                 {
-
                     System.out.println("plant");
                     curCard.setBlack();
                     sunLightValue.getAndAdd(-curPlant.getCost());
@@ -540,8 +577,33 @@ public class MainLoop implements MouseListener, MouseMotionListener {
                     });
                     curPlant = null;
                 }
+            } else if (usingShovel) {
+                if (hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)]) {
+                    int blockX = ((e.getY() - 120) / 150);
+                    int blockY = ((e.getX() - 40) / 120);
+                    boolean flag = false;
+                    for (int i = 0; i < 5; i++) {
+                        for (int j = 0; j < plants[i].size(); j++) {
+                            if (plants[i].get(j) != null && blockX == ((plants[i].get(j).getY() + 10 - 120) / 150) && blockY == ((plants[i].get(j).getX() + 10 - 40) / 120)) {
+                                plants[i].get(j).receiveDamage(10000);
+                                usingShovel = false;
+                                shovel.setEnabled(true);
+                                shovel.setVisible(true);
+                                hasPlanted[((e.getY() - 120) / 150)][((e.getX() - 40) / 120)] = false;
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (flag) break;
+                    }
+                } else {
+                    usingShovel = false;
+                    shovel.setEnabled(true);
+                    shovel.setVisible(true);
+                }
             }
         }
+        usingShovel = false;
     }
 
     Card curCard;
