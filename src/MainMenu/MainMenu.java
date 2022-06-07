@@ -10,8 +10,16 @@ package MainMenu;
 
 
 import Battle.MainLoop;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.*;
+
+
 
 public class MainMenu extends JFrame {
     public MainMenu(int id) {
@@ -29,23 +37,27 @@ public class MainMenu extends JFrame {
     }
     static MainMenu startWindow;
     static MusicStuff menuBgm;
+    static String[] bgmPath={"src/bgm/battlebgm_day.wav","src/bgm/battlebgm_night.wav"};
 
     public static void change(int id){// 换背景图
 
         startWindow.dispose();
         startWindow=new MainMenu(id+1);
     }
-    public static void selectGame(){
+
+    // 选择关卡请使用selectGame。
+    public static void selectGame(int model){
+        // 关卡id(model)映射：0白天，1晚上
+
         // 切换bgm
         menuBgm.stopMusic();
-        menuBgm.playMusic("src/bgm/battlebgm_day.wav");
-        // TODO
+        menuBgm.playMusic(bgmPath[model]);
+        // 进入Battle
         System.out.println("请选择关卡：");
-        startWindow.dispose();
-        JFrame tmp = new JFrame();
-        tmp.setSize(1200, 900);
-        tmp.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        new Thread(() -> {new MainLoop(tmp, 0);}).start();
+
+        // 进入关卡：
+        // 6.5 0:10:发现之前窗口变白也是没开线程的问题，可以继续用startWindow。
+        new Thread(() -> {new MainLoop(startWindow);}).start();
 
     }
     public static void main(String[] args) {
@@ -55,7 +67,7 @@ public class MainMenu extends JFrame {
         menuBgm = new MusicStuff();
         // 背景音乐的路径，如需要改变请改这里：
         menuBgm.playMusic("src/bgm/menubgm.wav");
-        System.out.println("To end");
+     //   System.out.println("To end");
         //调用战斗模块: 正确导入既定关卡
         //System.exit(0);
         //退出功能
