@@ -23,7 +23,7 @@ public class Menu extends JPanel {
                     MainMenu.change(id);
                 }else{// 进入关卡选择
                     if(firstClicked) {// 防止多次点击
-                        MainMenu.selectGame(id);
+                        MainMenu.selectGame(0);
                         firstClicked=false;
                     }
                 }
