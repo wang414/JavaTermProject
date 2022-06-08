@@ -14,6 +14,7 @@ https://github.com/wang414/JavaTermProject.git
 ## Usage
 
 ### Environment
-Java 17 
+Java 17   
+直接运行MainMenu中的Main函数即可
 ## Licence
 [MIT](./LICENSE)
